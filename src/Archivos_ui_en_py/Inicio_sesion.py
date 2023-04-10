@@ -9,14 +9,17 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from Estilos_o_diseños import Estilos
+from Fuciones.Estilos_o_diseños import Estilos
+from Archivos_ui_en_py.Registro import Registro
+#importar las funciones que estan dentro del archivo Funcion_cierre.py que a su vez esta dentro de la carpeta Funciones
+from Fuciones.Funcion_cierre import Cierre_ventanas
 
-
-class Ui_MainWindow(object):
+class Inicio_sesion(object):
     def setupUi(self, MainWindow):
         #MainWindow es la ventana principal
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(311, 386)
+        #MainWindow.setMaximumSize(900, 600)#Determenia el tamaño maximo de la ventana
         
         #centralwidget es el que contiene el Frame_fondo
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -144,6 +147,10 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+        #Funcion que se ejecuta al presionar el boton de iniciar sesion
+        self.Button_inicio_sesion.clicked.connect(self.datos_user)
+        self.Button_registrarse.clicked.connect(self.registrarse)
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
 
@@ -156,3 +163,31 @@ class Ui_MainWindow(object):
         self.Mantener_sesion.setText(_translate("MainWindow", "Mantener sesión iniciada"))
         self.Label_pregunta.setText(_translate("MainWindow", "No tienes cuenta"))
         self.Button_registrarse.setText(_translate("MainWindow", "Registrate"))
+    
+    #Funcion que obtiene los datos del usuario
+    def datos_user(self):
+        self.user = self.Text_usuario.text()
+        self.password = self.Text_password.text()
+        print(self.user)
+        print(self.password)
+
+    #Funcion que abre la ventana de registro y cierra la ventana de inicio de sesion
+    def registrarse(self):
+        self.window = QtWidgets.QMainWindow()
+        self.ui = Registro()
+        self.ui.setupUi(self.window)
+        self.window.show()
+        
+
+
+        
+        
+
+        
+
+
+
+
+
+
+

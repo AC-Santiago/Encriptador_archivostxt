@@ -36,7 +36,7 @@
        <enum>Qt::LeftToRight</enum>
       </property>
       <property name="styleSheet">
-       <string notr="true">QFrame {
+       <string notr="true">.QFrame#Frame_fondo{
 border-radius:10px;
 background-image: url(src/imagenes/Fondo.svg);
 background-repeat: no-repeat;

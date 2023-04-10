@@ -1,10 +1,11 @@
 class Estilos(object):
     #Estilo de Frame de fondo
     def Estilo_Frame_Fondo(self):
-        Estilos_Frame_fondo = str("QFrame {\n"
+        Estilos_Frame_fondo = str("QFrame#Frame_fondo {\n"
                                 "border-radius:10px;\n"
                                 "background-image: url(src/imagenes/Fondo.svg);\n"
                                 "background-repeat: no-repeat;\n"
+                                "background-size: cover;\n"
                                 "background-position: center;\n"" }")
         return Estilos_Frame_fondo
 
@@ -148,3 +149,13 @@ class Estilos(object):
                                         "  text-overflow: ellipsis;\n"
                                         "}")
         return Estilos_Checkbox_Manter_Sesion
+    
+    # Estilo del centralwidget
+    def Estilo_Centralwidget(self):
+        Estilos_Centralwidget = str("QtWidgets#centralwidget {\n"
+                                "border-radius:10px;\n"
+                                "background-image: url(src/imagenes/Fondo.svg);\n"
+                                "background-repeat: no-repeat;\n"
+                                "background-size: cover;\n"
+                                "background-position: center;\n"" }")
+        return Estilos_Centralwidget
