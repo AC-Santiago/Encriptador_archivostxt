@@ -1,11 +1,10 @@
-from Archivos_ui_en_py.Inicio_sesion import Inicio_sesion
+from Iniciador_inicio_sesion import Inicio_sesion
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QApplication
 
 if __name__ == "__main__":
     import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Inicio_sesion()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    app = QApplication(sys.argv)
+    window = Inicio_sesion()
+    window.show()
     sys.exit(app.exec_())

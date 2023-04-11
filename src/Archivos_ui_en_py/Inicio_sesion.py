@@ -9,10 +9,10 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from Fuciones.Estilos_o_diseños import Estilos
+from Archivos_ui_en_py.Estilos_o_diseños import Estilos
 from Archivos_ui_en_py.Registro import Registro
 #importar las funciones que estan dentro del archivo Funcion_cierre.py que a su vez esta dentro de la carpeta Funciones
-from Fuciones.Funcion_cierre import Cierre_ventanas
+
 
 class Inicio_sesion(object):
     def setupUi(self, MainWindow):

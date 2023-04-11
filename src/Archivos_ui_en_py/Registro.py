@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from Fuciones.Estilos_o_diseños import Estilos
+from Archivos_ui_en_py.Estilos_o_diseños import Estilos
 
 
 class Registro(object):
