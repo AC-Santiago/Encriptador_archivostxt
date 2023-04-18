@@ -17,6 +17,9 @@ class Inicio_sesion(QMainWindow):
         self.Button_inicio_sesion.clicked.connect(self.datos_user)
         self.Button_registrarse.clicked.connect(self.registrarse)
 
+        #detecta cuando el checkbox de mantener sesion activa esta activado o desactivado
+        self.Mantener_sesion.connect(self.mantener_sesion)
+
     #Funcion que obtiene los datos del usuario
     def datos_user(self):
         self.user = self.Text_usuario.text()
@@ -25,6 +28,7 @@ class Inicio_sesion(QMainWindow):
             print("Bienvenido")
         else:
             print("Usuario o contraseña incorrecta")
+
 
 
     #Funcion que abre la ventana de registro y cierra la ventana de inicio de sesion
