@@ -19,7 +19,7 @@ class Inicio_sesion(QMainWindow):
         self.Button_registrarse.clicked.connect(self.registrarse)
 
         # detecta cuando el checkbox de mantener sesion activa esta activado o desactivado
-        self.Mantener_sesion.connect(self.mantener_sesion)
+        # self.Mantener_sesion.connect(self.mantener_sesion)
 
     # Funcion que obtiene los datos del usuario
     def datos_user(self):

@@ -1,9 +1,8 @@
 from pymongo import MongoClient
-import pymongo
+from pymongo.server_api import ServerApi
 
-Client = pymongo.MongoClient(
-    "mongodb+srv://SantiagoA:IrRfBA8kgyiuIIxJ@proyecte.cbmd2qp.mongodb.net/?retryWrites=true&w=majority"
-)
+Uri = "mongodb+srv://SantiagoA:IrRfBA8kgyiuIIxJ@proyecte.cbmd2qp.mongodb.net/?retryWrites=true&w=majority"
+Client = MongoClient(Uri, server_api=ServerApi("1"))
 db = Client.Encriptador_proyect
 
 
