@@ -1,4 +1,10 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLineEdit
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QApplication,
+    QLineEdit,
+    QGraphicsBlurEffect,
+    QGraphicsOpacityEffect,
+)
 from PyQt5.QtGui import QGuiApplication, QIcon
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.uic import loadUi
@@ -17,18 +23,45 @@ class Pagina_inicial(QMainWindow):
     def abrir_menu(self):
         # Obtener el ancho del frame (Frame_menu)
         ancho = self.Frame_menu.width()
+        # da un efecto de opacidad
+        blur_effect = QGraphicsBlurEffect()
+        effect = QGraphicsBlurEffect()
+        effect.setBlurRadius(0)
         if ancho == 0:
             # Cambiar el tamaño del ancho al frame (Frame_menu) a 200
             self.Frame_menu.setMaximumWidth(200)
+
+            # mientras se hace el cambio de tamaño hacer una animacion de 500 milisegundos
+            self.animation = QtCore.QPropertyAnimation(self.Frame_menu, b"maximumWidth")
+            self.animation.setDuration(500)
+            self.animation.setStartValue(0)
+            self.animation.setEndValue(200)
+            self.animation.setEasingCurve(QtCore.QEasingCurve.InOutQuart)
+            self.animation.start()
+
+            self.Abrir_menu.setIcon(QIcon("src/imagenes/left-arrow.png"))
+
+            # efecto de opacidad
+            blur_effect.setBlurRadius(10)
+            self.Frame_principal.setGraphicsEffect(blur_effect)
+
         else:
-            # Cambiar el tamaño del ancho al frame (Frame_menu) a 0
+            # Cambiar el tamaño del ancho al frame (Frame_menu) a 0 y mientras se hace el cambio de tamaño hacer una animacion de 500 milisegundos
             self.Frame_menu.setMaximumWidth(0)
 
+            self.animation = QtCore.QPropertyAnimation(self.Frame_menu, b"maximumWidth")
+            self.animation.setDuration(500)
+            self.animation.setStartValue(200)
+            self.animation.setEndValue(0)
+            self.animation.setEasingCurve(QtCore.QEasingCurve.InOutQuart)
+            self.animation.start()
 
-if __name__ == "__main__":
-    import sys
+            # efecto de opacidad
+            blur_effect.setBlurRadius(0)
+            self.Frame_principal.setGraphicsEffect(blur_effect)
 
-    app = QApplication(sys.argv)
-    window = Pagina_inicial()
-    window.show()
-    sys.exit(app.exec_())
+            # cambiar el icono del boton "Abrir_menu" a un icono de flecha hacia la derecha
+            self.Abrir_menu.setIcon(QIcon("src/imagenes/Flecha_derecha.png"))
+
+    def Nombre_User(self):
+        self.Label_nombreU.setText("Hola")
