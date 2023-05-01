@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt
 import sys
 from Iniciador_Pagina_inicial import Pagina_inicial
 from Iniciador_Registro import Registro
-from Conexion_DB_Mongo import Verificar_user
+from Funciones.Conexion_DB_Mongo import Verificar_user
 
 
 class Inicio_sesion(QMainWindow):

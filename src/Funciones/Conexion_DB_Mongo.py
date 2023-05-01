@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
-from Generador_ID import Generar_id
+from Funciones.Generador_ID import Generar_id
 
 Uri = "mongodb+srv://SantiagoA:IrRfBA8kgyiuIIxJ@proyecte.cbmd2qp.mongodb.net/?retryWrites=true&w=majority"
 Client = MongoClient(Uri, server_api=ServerApi("1"))
