@@ -1,1 +1,4 @@
-[{"Nombre": "SantiagoA", "estado_check": true}, {"Nombre": "Sebastia", "estado_check": true}]
+[
+  { "Nombre": "SantiagoA", "estado_check": true },
+  { "Nombre": "Sebastia", "estado_check": true }
+]
