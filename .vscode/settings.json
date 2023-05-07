@@ -1,4 +1,9 @@
 {
     "python.analysis.typeCheckingMode": "basic",
-    "editor.tokenColorCustomizations": { "comments": "#0F9431" }
+    "editor.tokenColorCustomizations": {
+        "comments": "#0F9431"
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    }
 }
