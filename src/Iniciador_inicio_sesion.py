@@ -3,10 +3,13 @@ from PyQt5.QtGui import QGuiApplication, QIcon
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import Qt
+
 import sys
+
 from Iniciador_Pagina_inicial import Pagina_inicial
 from Iniciador_Registro import Registro
 from Funciones.Conexion_DB_Mongo import Verificar_user
+from Funciones.Manipulador_json import manage_json
 
 
 class Inicio_sesion(QMainWindow):
@@ -19,14 +22,14 @@ class Inicio_sesion(QMainWindow):
         self.Button_inicio_sesion.clicked.connect(self.datos_user)
         self.Button_registrarse.clicked.connect(self.registrarse)
 
-        # detecta cuando el checkbox de mantener sesion activa esta activado o desactivado
-        # self.Mantener_sesion.connect(self.mantener_sesion)
-
     # Funcion que obtiene los datos del usuario
     def datos_user(self):
         self.user = self.Text_usuario.text()
         self.password = self.Text_password.text()
         if Verificar_user(self.user, self.password) == True:
+            self.mantener_sesion()
+            self.name_user()
+
             # abre la ventana de la pagina inicial
             self.pagina_inicial = Pagina_inicial()
             self.pagina_inicial.show()
@@ -44,3 +47,22 @@ class Inicio_sesion(QMainWindow):
         self.registro = Registro()
         self.registro.show()
         self.close()
+
+    # Funcion que cambia el valor del estado_check de json para que se mantenga la sesion
+    def mantener_sesion(self):
+        ruta = "src/Archivos.json/Nombre_usuario.json"
+        prueba = manage_json(ruta)
+        if self.Mantener_sesion.isChecked() == 1:
+            prueba.edit_element("estado_check", 0, 1)
+        else:
+            if prueba.get_element("estado_check") == 1:
+                prueba.edit_element("estado_check", 1, 0)
+            else:
+                prueba.edit_element("estado_check", 0, 0)
+
+    # Funcion que le cambie el nombre de json al usaurio ingresado
+    def name_user(self):
+        ruta = "src/Archivos.json/Nombre_usuario.json"
+        prueba = manage_json(ruta)
+        resultado = prueba.get_element("Nombre")
+        prueba.edit_element("Nombre", resultado, self.user)

@@ -41,6 +41,7 @@ class manage_json:
     #!Funcion que pueda extraer un elemento de la lista y diccionario
     def get_element(self, elemento):
         self.verify_file()
+        self.get_json()
         if self.errorfoundfield == 0:
             if self.tipo == 1:
                 lista_resultado = list()
@@ -50,17 +51,23 @@ class manage_json:
                     lista_resultado.append(Dato.get(elemento))
                     contador += 1
                 # print(contador)
-                return lista_resultado
+                if contador == 1:
+                    return lista_resultado[0]
+                else:
+                    return lista_resultado
 
             elif self.tipo == 2:
                 resultado = list()
                 Datos = self.get_json()
                 resultado.append(Datos.get(elemento))  # type:ignore
                 return resultado
+        elif self.errorfoundfield == 1:
+            print("El archivo no existe")
 
     #! Funcion que pueda editar valores del json y guardarlos en el archivo
     def edit_element(self, elemento, valor1, valor2):
         self.verify_file()
+        self.get_json()
         if self.errorfoundfield == 0:
             contador = 0
             if self.tipo == 1:
@@ -91,6 +98,9 @@ class manage_json:
             if contador == 0:
                 print("No se encontro el elemento")
 
+        elif self.errorfoundfield == 1:
+            print("El archivo no existe")
+
     #! Funcion que pueda crear un archivo json
     def create_json(self, ruta, name_json, contenido):
         # * Verifica que la ruta que se usa exista sino existe la crea
@@ -107,6 +117,7 @@ class manage_json:
     #! Funcion que pueda eliminar un elemento del json
     def delete_element(self, elemento, valor):
         self.verify_file()
+        self.get_json()
         if self.errorfoundfield == 0:
             if self.tipo == 1:
                 with open(self.ruta, "r") as f:
@@ -131,13 +142,5 @@ class manage_json:
                 with open(self.ruta, "w") as f:
                     json.dump(data, f)
 
-
-if __name__ == "__main__":
-    ruta = "./src/Archivos.json/Nombre_usuario.json"
-    prueba = manage_json(ruta)
-    prueba.get_json()
-    prueba.create_json(
-        "./src/Archivos.json",
-        "Nombre_usuario.json",
-        """[{"Nombre": "SantiagoA", "estado_check": true}, {"Nombre": "Sebastia", "estado_check": true}]""",
-    )
+        elif self.errorfoundfield == 1:
+            print("El archivo no existe")
