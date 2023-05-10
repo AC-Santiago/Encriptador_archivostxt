@@ -19,6 +19,7 @@ class Pagina_inicial(QMainWindow):
         self.setWindowTitle("Pagina inicial")
 
         self.Abrir_menu.clicked.connect(self.abrir_menu)
+        self.Button_cerrar_sesion.clicked.connect(self.Cerrar_sesion)
 
     def abrir_menu(self):
         # Obtener el ancho del frame (Frame_menu)
@@ -65,3 +66,18 @@ class Pagina_inicial(QMainWindow):
 
     def Nombre_User(self):
         self.Label_nombreU.setText("Hola")
+
+    def Cerrar_sesion(self):
+        from Funciones.Manipulador_json import manage_json
+        from Iniciador_inicio_sesion import Inicio_sesion
+
+        ruta = "src/Archivos.json/Nombre_usuario.json"
+        manage = manage_json(ruta)
+
+        # * Quita el esatdo de 1 a 0 para que no se mantenga la sesion
+        if manage.get_element("estado_check") == 1:
+            manage.edit_element("estado_check", 1, 0)
+
+        self.inicio_sesion = Inicio_sesion()
+        self.inicio_sesion.show()
+        self.close()
