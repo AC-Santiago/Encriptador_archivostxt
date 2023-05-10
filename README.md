@@ -4,7 +4,7 @@ Programa que encripte texto como contraseñas u otros.
 
 # Liberias externas necesarias
 
-    Todas las librerias necesarias estan en el archivo "requirements.txt" y se pueden instalar con el siguiente comando:
+Todas las librerias necesarias estan en el archivo "requirements.txt" y se pueden instalar con el siguiente comando:
 
     `pip install -r requirements.txt`
 
