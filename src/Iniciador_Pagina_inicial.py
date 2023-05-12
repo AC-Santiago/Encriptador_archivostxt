@@ -9,6 +9,8 @@ from PyQt5.QtGui import QGuiApplication, QIcon
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import Qt
+
+from Funciones.Manipulador_json import manage_json
 import sys
 
 
@@ -17,6 +19,11 @@ class Pagina_inicial(QMainWindow):
         super(Pagina_inicial, self).__init__()
         loadUi("src/Archivos.ui/Pagina_inicial.ui", self)
         self.setWindowTitle("Pagina inicial")
+
+        # pone el nombre del usuario en el label (Label_nombreU) este nombre traido del json
+        Nombre_Use = manage_json("src/Archivos.json/Nombre_usuario.json")
+        Name = Nombre_Use.get_element("Nombre")
+        self.Label_nombreU.setText(Name)
 
         self.Abrir_menu.clicked.connect(self.abrir_menu)
         self.Button_cerrar_sesion.clicked.connect(self.Cerrar_sesion)

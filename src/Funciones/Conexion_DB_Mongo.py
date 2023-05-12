@@ -3,6 +3,7 @@ from pymongo.server_api import ServerApi
 from Funciones.Generador_ID import Generar_id
 
 Uri = "mongodb+srv://SantiagoA:IrRfBA8kgyiuIIxJ@proyecte.cbmd2qp.mongodb.net/?retryWrites=true&w=majority"
+# Uri = "mongodb://localhost:27017"
 Client = MongoClient(Uri, server_api=ServerApi("1"))
 db = Client.Encriptador_proyect
 

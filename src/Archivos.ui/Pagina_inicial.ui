@@ -72,7 +72,7 @@ QPushButton:hover{
 	background-color: rgb(118, 119, 113);
 }
 QLabel#Label_imagenU{
-	background-color: rgb(255,255,255);
+	background-color: rgb(255, 255, 255);
 	border-radius: 70px;
 }</string>
       </property>
@@ -144,8 +144,8 @@ QLabel#Label_imagenU{
              </property>
              <property name="maximumSize">
               <size>
-               <width>200</width>
-               <height>200</height>
+               <width>140</width>
+               <height>140</height>
               </size>
              </property>
              <property name="styleSheet">
@@ -154,8 +154,17 @@ QLabel#Label_imagenU{
              <property name="text">
               <string/>
              </property>
+             <property name="textFormat">
+              <enum>Qt::AutoText</enum>
+             </property>
+             <property name="pixmap">
+              <pixmap>../imagenes/Icon_user.png</pixmap>
+             </property>
              <property name="scaledContents">
-              <bool>false</bool>
+              <bool>true</bool>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
              </property>
              <property name="wordWrap">
               <bool>false</bool>
