@@ -2,7 +2,6 @@ from Iniciador_inicio_sesion import Inicio_sesion
 from Funciones.Manipulador_json import manage_json
 from Iniciador_Pagina_inicial import Pagina_inicial
 
-# from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication
 
 if __name__ == "__main__":

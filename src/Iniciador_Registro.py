@@ -4,6 +4,7 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import Qt
 import sys
+
 from Funciones.Conexion_DB_Mongo import Insertar_user
 
 
