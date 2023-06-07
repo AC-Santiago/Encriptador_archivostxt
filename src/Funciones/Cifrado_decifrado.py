@@ -3,6 +3,9 @@ import secrets
 from Manipulador_json import manage_json
 
 
+# ? Tener en cuanta que el cifrado ARS necesita que n que es (p*q) sea mayor que el mensaje a cifrar
+# ? ejemplo si el cuadro de referencia contempla 65 caracteres n no puede ser menor
+# ? 0<=m<n donde m es la letra a cifrar y n es el cuadro de referencia
 class RSA:
     def __init__(self, p, q):
         self.p = int(p)
@@ -11,7 +14,12 @@ class RSA:
         self.phi = (p - 1) * (q - 1)
         self.e = int()
         self.d = int()
-        self.resultado = list()
+        self.resultado_cifrado = list()
+        self.resultado_decifrado = list()
+
+        ## Abre el archivo json
+        self.path = "src/Archivos.json/Abecedario.json"
+        self.abecedario = manage_json(self.path)
 
     def generar_clave(self):
         # global e
@@ -22,7 +30,8 @@ class RSA:
             operacion_d2 = operacion_d1 / self.e
             if operacion_d2.is_integer():
                 self.d = int(operacion_d2)
-                if self.d != self.e:  ## evita que d sea igual a e
+                # * evita que d sea igual a e
+                if self.d != self.e:
                     break
         return self.e, self.d
 
@@ -63,51 +72,113 @@ class RSA:
         capital_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         lower_letters = "abcdefghijklmnopqrstuvwxyz"
         numbers = "0123456789"
+        special_characters = " !#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
 
         mensaje_cifrado = str(mensaje)
 
-        #! Abre el archivo json
-        path = "src/Archivos.json/Abecedario.json"
-        abecedario = manage_json(path)
-        operacion = int(0)
+        operacion = int()
         #! Hace iteraciones por cada letra del mensaje
         for letra in mensaje_cifrado:
             ## Verifica si la "letra" es mayuscula
             if letra in capital_letters:
-                lista_letras = list(abecedario.get_element("Mayusculas"))  # type:ignore
+                lista_letras = list(
+                    self.abecedario.get_element("Mayusculas")  # type:ignore
+                )
                 dict_letras = lista_letras[0]  # type:ignore
                 dato = int(dict_letras.get(letra))
                 operacion = (dato**self.e) % self.n
-                self.resultado.append(operacion)
+                self.resultado_cifrado.append(operacion)
 
             ## Verifica si la "letra" es minuscula
             elif letra in lower_letters:
-                lista_letras = list(abecedario.get_element("Minusculas"))  # type:ignore
+                lista_letras = list(
+                    self.abecedario.get_element("Minusculas")  # type:ignore
+                )
                 dict_letras = lista_letras[0]
                 dato = int(dict_letras.get(letra))
                 operacion = (dato**self.e) % self.n
-                self.resultado.append(operacion)
+                self.resultado_cifrado.append(operacion)
 
             ## Verifica si la "letra" es un numero
             elif letra in numbers:
-                lista_letras = list(abecedario.get_element("Numeros"))  # type:ignore
+                lista_letras = list(
+                    self.abecedario.get_element("Numeros")  # type:ignore
+                )
                 dict_letras = lista_letras[0]
                 dato = int(dict_letras.get(letra))
                 operacion = (dato**self.e) % self.n
-                self.resultado.append(operacion)
-        print("e: ", self.e)
+                self.resultado_cifrado.append(operacion)
+
+            ## Verifica si la "letra" es un caracter especial
+            elif letra in special_characters:
+                lista_letras = list(
+                    self.abecedario.get_element("Simbolos_especiales")  # type:ignore
+                )
+                dict_letras = lista_letras[0]
+                dato = int(dict_letras.get(letra))
+                operacion = (dato**self.e) % self.n
+                self.resultado_cifrado.append(operacion)
+
+        mensaje_cifrado_final = "".join(map(str, self.resultado_cifrado))
+        print("Mensaje cifrado: ", mensaje_cifrado_final)
 
     def decifrar(self):
-        resultado_cifrado = self.resultado
-        print(resultado_cifrado)
-        print("d: ", self.d)
+        rango = len(self.resultado_cifrado)
+        # print("rango: ", rango)
+        # print(self.resultado_cifrado)
+        for i in range(rango):
+            letra_cifrado = int(self.resultado_cifrado[i])
+            operacion = (letra_cifrado**self.d) % self.n
+            if operacion <= 26:
+                lista_letras = list(
+                    self.abecedario.get_element("Mayusculas")  # type:ignore
+                )
+                dict_letras = lista_letras[0]  # type:ignore
+
+                # * Busca la letra que corresponde al numero
+                for key, value in dict_letras.items():
+                    if value == operacion:
+                        self.resultado_decifrado.append(key)
+            elif operacion <= 52:
+                lista_letras = list(
+                    self.abecedario.get_element("Minusculas")  # type:ignore
+                )
+                dict_letras = lista_letras[0]  # type:ignore
+
+                # * Busca la letra que corresponde al numero
+                for key, value in dict_letras.items():
+                    if value == operacion:
+                        self.resultado_decifrado.append(key)
+            elif operacion <= 62:
+                lista_numeros = list(
+                    self.abecedario.get_element("Numeros")  # type:ignore
+                )
+                dict_numeros = lista_numeros[0]  # type:ignore
+
+                # * Busca el numero que corresponde al numero
+                for key, value in dict_numeros.items():
+                    if value == operacion:
+                        self.resultado_decifrado.append(key)
+            elif operacion <= 94:
+                lista_simbolos = list(
+                    self.abecedario.get_element("Simbolos_especiales")  # type:ignore
+                )
+                dict_simbolos = lista_simbolos[0]  # type:ignore
+
+                # * Busca el simbolo que corresponde al numero
+                for key, value in dict_simbolos.items():
+                    if value == operacion:
+                        self.resultado_decifrado.append(key)
+        # print(self.resultado_decifrado)
+        mesanje_decifrado = "".join(self.resultado_decifrado)
+        print("Mensaje decifrado", mesanje_decifrado)
 
 
 if __name__ == "__main__":
-    p = 3
-    q = 11
+    p = 101
+    q = 103
     rsa = RSA(p, q)
     e, d = rsa.generar_clave()
-    mensaje = "Hola"
+    mensaje = "Hola como esta mundo () acostasantiago@gmail.com"
     rsa.cifrar(mensaje)
     rsa.decifrar()
