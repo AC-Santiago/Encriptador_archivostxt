@@ -1,4 +1,4 @@
-import time
+# import time
 import secrets
 from Manipulador_json import manage_json
 
@@ -14,16 +14,22 @@ class RSA:
         self.phi = (p - 1) * (q - 1)
         self.e = int()
         self.d = int()
+
+        self.longitud_mensaje = int()
+        self.mensaje_cifrado = str()
+        self.letter = str()
+        self.select = int()
+
         self.resultado_cifrado = list()
         self.resultado_decifrado = list()
 
         ## Abre el archivo json
         self.path = "src/Archivos.json/Abecedario.json"
         self.abecedario = manage_json(self.path)
+        self.rules = list()
+        self.rulesFinal = list()
 
     def generar_clave(self):
-        # global e
-        # global d
         self.e = int(secrets.choice(self.lista_maximo_comun_divisor(self.phi)))
         for i in range(1, self.phi):
             operacion_d1 = 1 + (i * self.phi)
@@ -37,7 +43,6 @@ class RSA:
 
     #! Verifica que los numeros sean primos
     def primo_check(self, a):
-        star_time = time.time()
         contador = int(0)
         for i in range(1, a + 1):
             residuo = int(a % i)
@@ -46,18 +51,14 @@ class RSA:
             elif contador > 2:
                 break
         if contador == 2:
-            end_time = time.time()
-            print("Tiempo de ejecucion: ", end_time - star_time)
             return True
         else:
-            end_time = time.time()
-            print("Tiempo de ejecucion: ", end_time - star_time)
             return False
 
     #! funcion que muestra los maximos como un divisor de dos numeros
     def maximo_comun_divisor(self, a, b):
         while b != 0:
-            a, b = b, a % b  # funciona con el algoritmo de euclides
+            a, b = b, a % b  # * funciona con el algoritmo de euclides
         return a
 
     #! funcion que hace una lista de los numeros que den como maximos como un divisor de 1
@@ -69,63 +70,78 @@ class RSA:
         return lista
 
     def cifrar(self, mensaje):
+        self.longitud_mensaje = len(mensaje)
+        self.mensaje_cifrado = str(mensaje)
+        operacion = int()
+        rule = int()  # *cantidad de cifras que tiene el numero de la letra cifrada
+
+        opciones = {
+            1: "Mayusculas",
+            2: "Minusculas",
+            3: "Numeros",
+            4: "Simbolos_especiales",
+        }
+        #! Hace iteraciones por cada letra del mensaje
+        for letra in self.mensaje_cifrado:
+            self.letter = letra
+            self.ident_letra()
+            lista_letras = list(
+                self.abecedario.get_element(opciones[self.select])  # type:ignore
+            )
+            dict_letras = lista_letras[0]
+            dato = int(dict_letras.get(letra))
+            operacion = (dato**self.e) % self.n
+            self.resultado_cifrado.append(operacion)
+            rule = len(str(operacion))
+            self.rules.append(rule)
+        contador = 1
+        for i in range(len(self.rules) - 1):
+            if self.rules[i] == self.rules[i + 1]:
+                contador += 1
+            else:
+                self.rulesFinal.append(
+                    int(
+                        str(len(str(contador)))
+                        + str(contador)
+                        + str(len(str(self.rules[i])))
+                        + str(self.rules[i])
+                    )
+                )
+                contador = 1
+        self.rulesFinal.append(
+            int(
+                str(len(str(contador)))
+                + str(contador)
+                + str(len(str(self.rules[-1])))
+                + str(self.rules[-1])
+            )
+        )
+
+    def ident_letra(self):
         capital_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         lower_letters = "abcdefghijklmnopqrstuvwxyz"
         numbers = "0123456789"
-        special_characters = " !#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
+        special_characters = " !#$%&'()*+,-./:;<=>?@[\]^_`{|}~"  # type:ignore
 
-        mensaje_cifrado = str(mensaje)
+        ## Verifica si la "letra" es mayuscula
+        if self.letter in capital_letters:
+            self.select = 1
 
-        operacion = int()
-        #! Hace iteraciones por cada letra del mensaje
-        for letra in mensaje_cifrado:
-            ## Verifica si la "letra" es mayuscula
-            if letra in capital_letters:
-                lista_letras = list(
-                    self.abecedario.get_element("Mayusculas")  # type:ignore
-                )
-                dict_letras = lista_letras[0]  # type:ignore
-                dato = int(dict_letras.get(letra))
-                operacion = (dato**self.e) % self.n
-                self.resultado_cifrado.append(operacion)
+        ## Verifica si la "letra" es minuscula
+        elif self.letter in lower_letters:
+            self.select = 2
 
-            ## Verifica si la "letra" es minuscula
-            elif letra in lower_letters:
-                lista_letras = list(
-                    self.abecedario.get_element("Minusculas")  # type:ignore
-                )
-                dict_letras = lista_letras[0]
-                dato = int(dict_letras.get(letra))
-                operacion = (dato**self.e) % self.n
-                self.resultado_cifrado.append(operacion)
+        ## Verifica si la "letra" es un numero
+        elif self.letter in numbers:
+            self.select = 3
 
-            ## Verifica si la "letra" es un numero
-            elif letra in numbers:
-                lista_letras = list(
-                    self.abecedario.get_element("Numeros")  # type:ignore
-                )
-                dict_letras = lista_letras[0]
-                dato = int(dict_letras.get(letra))
-                operacion = (dato**self.e) % self.n
-                self.resultado_cifrado.append(operacion)
-
-            ## Verifica si la "letra" es un caracter especial
-            elif letra in special_characters:
-                lista_letras = list(
-                    self.abecedario.get_element("Simbolos_especiales")  # type:ignore
-                )
-                dict_letras = lista_letras[0]
-                dato = int(dict_letras.get(letra))
-                operacion = (dato**self.e) % self.n
-                self.resultado_cifrado.append(operacion)
-
-        mensaje_cifrado_final = "".join(map(str, self.resultado_cifrado))
-        print("Mensaje cifrado: ", mensaje_cifrado_final)
+        ## Verifica si la "letra" es un caracter especial
+        elif self.letter in special_characters:
+            self.select = 4
 
     def decifrar(self):
         rango = len(self.resultado_cifrado)
-        # print("rango: ", rango)
-        # print(self.resultado_cifrado)
+
         for i in range(rango):
             letra_cifrado = int(self.resultado_cifrado[i])
             operacion = (letra_cifrado**self.d) % self.n
@@ -169,16 +185,24 @@ class RSA:
                 for key, value in dict_simbolos.items():
                     if value == operacion:
                         self.resultado_decifrado.append(key)
-        # print(self.resultado_decifrado)
+
         mesanje_decifrado = "".join(self.resultado_decifrado)
         print("Mensaje decifrado", mesanje_decifrado)
+        return mesanje_decifrado
+
+    def organizar_mensajeC(self):
+        pass
 
 
 if __name__ == "__main__":
-    p = 101
-    q = 103
+    p = 3
+    q = 11
+    n = p * q
     rsa = RSA(p, q)
-    e, d = rsa.generar_clave()
-    mensaje = "Hola como esta mundo () acostasantiago@gmail.com"
-    rsa.cifrar(mensaje)
-    rsa.decifrar()
+    print(rsa.lista_maximo_comun_divisor(20))
+    # e, d = rsa.generar_clave()
+    # print("Clave publica: ", n, e)
+    # print("Clave privada: ", n, d)
+    # mensaje = "Hola mundo"
+    # rsa.cifrar(mensaje)
+    # rsa.decifrar()
