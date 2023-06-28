@@ -27,11 +27,9 @@ class manage_json:
             with open(self.ruta, "r") as contenido:
                 Datos = json.load(contenido)
                 if type(Datos) == list:  ## Si es una lista y diccionario
-                    # print("Es una lista y diccionario")
                     self.tipo = 1
                     self.lent = len(Datos)
                 elif type(Datos) == dict:  ## Si es un diccionario
-                    # print("Es un diccionario")
                     self.tipo = 2
                     self.lent = len(Datos)
             return Datos
@@ -50,7 +48,6 @@ class manage_json:
                 for Dato in Datos:  # type:ignore
                     lista_resultado.append(Dato.get(elemento))
                     contador += 1
-                # print(contador)
                 if contador == 1:
                     return lista_resultado[0]
                 else:
@@ -137,6 +134,34 @@ class manage_json:
 
                 if data[elemento] == valor:
                     data.remove(data[elemento])
+
+                # * Guardar los cambios en el archivo JSON
+                with open(self.ruta, "w") as f:
+                    json.dump(data, f)
+
+        elif self.errorfoundfield == 1:
+            print("El archivo no existe")
+
+    #! Funcion que pueda agregar un elemento al json
+    def add_element(self, elemento, valor):
+        self.verify_file()
+        self.get_json()
+        if self.errorfoundfield == 0:
+            if self.tipo == 1:
+                with open(self.ruta, "r") as f:
+                    data = json.load(f)
+
+                data.append({elemento: valor})
+
+                # * Guardar los cambios en el archivo JSON
+                with open(self.ruta, "w") as f:
+                    json.dump(data, f)
+
+            elif self.tipo == 2:
+                with open(self.ruta, "r") as f:
+                    data = json.load(f)
+
+                data[elemento] = valor
 
                 # * Guardar los cambios en el archivo JSON
                 with open(self.ruta, "w") as f:
