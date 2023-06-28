@@ -59,3 +59,12 @@ rules_Final.append(
 )
 
 print("RulesFinal: ", rules_Final)  # * RulesFinal = [1214, 1112, 1114, 1115, 1514]
+
+repeticones = 0
+for i in range(len(rules_Final)):
+    repeticones = int(str(rules_Final[i])[1:2])
+    #! agregara la rule a la lista de cifrado
+    for j in range(repeticones):
+        cifrado.append(int(str(rules_Final[i])[3:]))
+
+print("Cifrado: ", cifrado)
