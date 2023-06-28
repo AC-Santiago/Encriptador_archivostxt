@@ -7,11 +7,11 @@ from Manipulador_json import manage_json
 # ? ejemplo si el cuadro de referencia contempla 65 caracteres n no puede ser menor
 # ? 0<=m<n donde m es la letra a cifrar y n es el cuadro de referencia
 class RSA:
-    def __init__(self, p, q):
-        self.p = int(p)
-        self.q = int(q)
-        self.n = p * q
-        self.phi = (p - 1) * (q - 1)
+    def __init__(self):
+        self.p = int()  ## numero primo
+        self.q = int()  ## numero primo
+        self.n = int()  ## n = p*q
+        self.phi = int()  ## phi = (p-1)*(q-1)
         self.e = int()
         self.d = int()
 
@@ -29,18 +29,6 @@ class RSA:
         self.rules = list()
         self.rulesFinal = list()
 
-    def generar_clave(self):
-        self.e = int(secrets.choice(self.lista_maximo_comun_divisor(self.phi)))
-        for i in range(1, self.phi):
-            operacion_d1 = 1 + (i * self.phi)
-            operacion_d2 = operacion_d1 / self.e
-            if operacion_d2.is_integer():
-                self.d = int(operacion_d2)
-                # * evita que d sea igual a e
-                if self.d != self.e:
-                    break
-        return self.e, self.d
-
     #! Verifica que los numeros sean primos
     def primo_check(self, a):
         contador = int(0)
@@ -54,6 +42,23 @@ class RSA:
             return True
         else:
             return False
+
+    #! Genera los numeros primos y los componentes esenciales del cifrado como n y phi(n)
+    def generar_bases(self):
+        path = "src/Archivos.json/Numeros_primos.json"
+        Numero_primo = manage_json(path)
+        while self.p == self.q:
+            self.p = secrets.choice(
+                Numero_primo.get_element("Numeros_primos")[0]  # type:ignore
+            )
+
+            self.q = secrets.choice(
+                Numero_primo.get_element("Numeros_primos")[0]  # type:ignore
+            )
+        else:
+            self.n = self.p * self.q
+            self.phi = (self.p - 1) * (self.q - 1)
+            return self.p, self.q, self.n, self.phi
 
     #! funcion que muestra los maximos como un divisor de dos numeros
     def maximo_comun_divisor(self, a, b):
@@ -69,9 +74,59 @@ class RSA:
                 lista.append(i)
         return lista
 
-    def cifrar(self, mensaje):
+    #! Genera los dos componentes escenciales para las clave publica y privada
+    def generar_clave(self):
+        self.generar_bases()
+        self.e = int(secrets.choice(self.lista_maximo_comun_divisor(self.phi)))
+        for i in range(1, self.phi):
+            operacion_d1 = 1 + (i * self.phi)
+            operacion_d2 = operacion_d1 / self.e
+            if operacion_d2.is_integer():
+                self.d = int(operacion_d2)
+                # * evita que d sea igual a e
+                if self.d != self.e:
+                    break
+        return [self.n, self.e], [self.n, self.d]
+
+    #! Funcion que identifica que tipo de letra es la que se esta cifrando para dar un valor numerico más preciso
+    def ident_letra(self):
+        capital_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        lower_letters = "abcdefghijklmnopqrstuvwxyz"
+        numbers = "0123456789"
+        special_symbol = " !#$%&'()*+,-./:;<=>?@[\]^_`{|}~¿¡°¬¨·çÇñÑ"  # type:ignore
+        accent_letter = "áéíóúÁÉÍÓÚ"
+        special_letter = "üÜàèìòùÀÈÌÒÙâêîôûÂÊÎÔÛäëïöüÄËÏÖâêîôûÂÊÎÔÛãõÃÕåæÆœŒßþÞðÐøØµ€¥¢£§©®™°¹²³¼½¾±÷¬¦«»"  # type:ignore
+
+        ## Verifica si la "letra" es mayuscula
+        if self.letter in capital_letters:
+            self.select = 1
+
+        ## Verifica si la "letra" es minuscula
+        elif self.letter in lower_letters:
+            self.select = 2
+
+        ## Verifica si la "letra" es un numero
+        elif self.letter in numbers:
+            self.select = 3
+
+        ## Verifica si la "letra" es un simbolos especial
+        elif self.letter in special_symbol:
+            self.select = 4
+
+        ## Verifica si la "letra" es un caracter con tilde
+        elif self.letter in accent_letter:
+            self.select = 5
+
+        ## Verifica si la "letra" es un caracter especial
+        elif self.letter in special_letter:
+            self.select = 6
+
+    def cifrar(self, mensaje, Llave_publica):
         self.longitud_mensaje = len(mensaje)
         self.mensaje_cifrado = str(mensaje)
+        self.n = Llave_publica[0]
+        self.e = Llave_publica[1]
+
         operacion = int()
         rule = int()  # *cantidad de cifras que tiene el numero de la letra cifrada
 
@@ -80,6 +135,8 @@ class RSA:
             2: "Minusculas",
             3: "Numeros",
             4: "Simbolos_especiales",
+            5: "Caracteres_tilde",
+            6: "Caracteres_especiales",
         }
         #! Hace iteraciones por cada letra del mensaje
         for letra in self.mensaje_cifrado:
@@ -116,32 +173,13 @@ class RSA:
                 + str(self.rules[-1])
             )
         )
+        return self.resultado_cifrado
 
-    def ident_letra(self):
-        capital_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        lower_letters = "abcdefghijklmnopqrstuvwxyz"
-        numbers = "0123456789"
-        special_characters = " !#$%&'()*+,-./:;<=>?@[\]^_`{|}~"  # type:ignore
-
-        ## Verifica si la "letra" es mayuscula
-        if self.letter in capital_letters:
-            self.select = 1
-
-        ## Verifica si la "letra" es minuscula
-        elif self.letter in lower_letters:
-            self.select = 2
-
-        ## Verifica si la "letra" es un numero
-        elif self.letter in numbers:
-            self.select = 3
-
-        ## Verifica si la "letra" es un caracter especial
-        elif self.letter in special_characters:
-            self.select = 4
-
-    def decifrar(self):
+    def decifrar(self, mensaje_cifrado, Llave_privada):
+        self.resultado_cifrado = mensaje_cifrado
         rango = len(self.resultado_cifrado)
-
+        self.n = Llave_privada[0]
+        self.d = Llave_privada[1]
         for i in range(rango):
             letra_cifrado = int(self.resultado_cifrado[i])
             operacion = (letra_cifrado**self.d) % self.n
@@ -175,7 +213,7 @@ class RSA:
                 for key, value in dict_numeros.items():
                     if value == operacion:
                         self.resultado_decifrado.append(key)
-            elif operacion <= 94:
+            elif operacion <= 102:
                 lista_simbolos = list(
                     self.abecedario.get_element("Simbolos_especiales")  # type:ignore
                 )
@@ -185,9 +223,28 @@ class RSA:
                 for key, value in dict_simbolos.items():
                     if value == operacion:
                         self.resultado_decifrado.append(key)
+            elif operacion <= 112:
+                lista_tilde = list(
+                    self.abecedario.get_element("Caracteres_tilde")  # type:ignore
+                )
+                dict_tilde = lista_tilde[0]
+
+                # * Busca el caracter con tilde que corresponde al numero
+                for key, value in dict_tilde.items():
+                    if value == operacion:
+                        self.resultado_decifrado.append(key)
+            elif operacion <= 181:
+                lista_especiales = list(
+                    self.abecedario.get_element("Caracteres_especiales")  # type:ignore
+                )
+                dict_especiales = lista_especiales[0]
+
+                # * Busca el caracter especial que corresponde al numero
+                for key, value in dict_especiales.items():
+                    if value == operacion:
+                        self.resultado_decifrado.append(key)
 
         mesanje_decifrado = "".join(self.resultado_decifrado)
-        print("Mensaje decifrado", mesanje_decifrado)
         return mesanje_decifrado
 
     def organizar_mensajeC(self):
@@ -195,14 +252,9 @@ class RSA:
 
 
 if __name__ == "__main__":
-    p = 3
-    q = 11
-    n = p * q
-    rsa = RSA(p, q)
-    print(rsa.lista_maximo_comun_divisor(20))
-    # e, d = rsa.generar_clave()
-    # print("Clave publica: ", n, e)
-    # print("Clave privada: ", n, d)
-    # mensaje = "Hola mundo"
-    # rsa.cifrar(mensaje)
-    # rsa.decifrar()
+    rsa = RSA()
+    mensaje = "Hola, este es un mensaje de prueba para el cifrado RSA."
+    rsa.cifrar(mensaje, [26123, 6731])
+    print("Mensaje cifrado: ", rsa.resultado_cifrado)
+    print("Mensaje decifrado: ", rsa.decifrar(rsa.resultado_cifrado, [26123, 3971]))
+    # print(rsa.generar_clave())
