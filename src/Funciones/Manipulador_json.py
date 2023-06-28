@@ -24,7 +24,7 @@ class manage_json:
     def get_json(self):
         self.verify_file()
         if self.errorfoundfield == 0:
-            with open(self.ruta, "r") as contenido:
+            with open(self.ruta, "r", encoding="utf-8") as contenido:
                 Datos = json.load(contenido)
                 if type(Datos) == list:  ## Si es una lista y diccionario
                     self.tipo = 1
