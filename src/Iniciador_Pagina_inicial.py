@@ -27,6 +27,8 @@ class Pagina_inicial(QMainWindow):
 
         self.Abrir_menu.clicked.connect(self.abrir_menu)
         self.Button_cerrar_sesion.clicked.connect(self.Cerrar_sesion)
+        self.Combo_box_ci_de.currentTextChanged.connect(self.combo_box_cif_dec)
+        self.Butto_Cifrar_Decifrar.clicked.connect(self.Cifrar_Decifrar)
 
     def abrir_menu(self):
         # Obtener el ancho del frame (Frame_menu)
@@ -88,3 +90,27 @@ class Pagina_inicial(QMainWindow):
         self.inicio_sesion = Inicio_sesion()
         self.inicio_sesion.show()
         self.close()
+
+    def combo_box_cif_dec(self):
+        if self.Combo_box_ci_de.currentText() == "Cifrar":
+            self.Butto_Cifrar_Decifrar.setText("Cifrar")
+        elif self.Combo_box_ci_de.currentText() == "Descifrar":
+            self.Butto_Cifrar_Decifrar.setText("Descifrar")
+
+    def Cifrar_Decifrar(self):
+        from Funciones.Cifrado_decifrado import RSA
+        import json
+
+        self.rsa = RSA()
+
+        self.key_public = json.loads(self.lineEdit_llave_publica.text())
+        self.key_private = json.loads(self.lineEdit_llave_privada.text())
+
+        if self.Combo_box_ci_de.currentText() == "Cifrar":
+            mensaje = self.plainTextEdit_input.toPlainText()
+            output = str(self.rsa.cifrar(mensaje, self.key_public))
+            self.plainTextEdit_output.setPlainText(output)
+        elif self.Combo_box_ci_de.currentText() == "Descifrar":
+            mensaje = json.loads(self.plainTextEdit_input.toPlainText())
+            output = str(self.rsa.descifrar(mensaje, self.key_private))
+            self.plainTextEdit_output.setPlainText(output)

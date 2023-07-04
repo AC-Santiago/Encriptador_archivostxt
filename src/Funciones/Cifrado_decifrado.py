@@ -1,5 +1,7 @@
 # import time
 import secrets
+
+# from Funciones.Manipulador_json import manage_json
 from Manipulador_json import manage_json
 
 
@@ -93,9 +95,9 @@ class RSA:
         capital_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         lower_letters = "abcdefghijklmnopqrstuvwxyz"
         numbers = "0123456789"
-        special_symbol = " !#$%&'()*+,-./:;<=>?@[\]^_`{|}~¿¡°¬¨·çÇñÑ"  # type:ignore
+        special_symbol = " !#$%&()*+,-./:;<=>?@[\]^_`{|}~¿¡°¬¨·çÇñÑ"  # type:ignore
         accent_letter = "áéíóúÁÉÍÓÚ"
-        special_letter = "üÜàèìòùÀÈÌÒÙâêîôûÂÊÎÔÛäëïöüÄËÏÖâêîôûÂÊÎÔÛãõÃÕåæÆœŒßþÞðÐøØµ€¥¢£§©®™°¹²³¼½¾±÷¬¦«»"  # type:ignore
+        special_letter = "üÜàèìòùÀÈÌÒÙâêîôûÂÊÎÔÛäëïöüÄËÏÖâêîôûÂÊÎÔÛãõÃÕåæÆœŒßþÞðÐøØµ€¥¢£§©®™°¹²³¼½¾±÷¬¦«»'"  # type:ignore
 
         ## Verifica si la "letra" es mayuscula
         if self.letter in capital_letters:
@@ -175,7 +177,7 @@ class RSA:
         )
         return self.resultado_cifrado
 
-    def decifrar(self, mensaje_cifrado, Llave_privada):
+    def descifrar(self, mensaje_cifrado, Llave_privada):
         self.resultado_cifrado = mensaje_cifrado
         rango = len(self.resultado_cifrado)
         self.n = Llave_privada[0]
@@ -233,7 +235,7 @@ class RSA:
                 for key, value in dict_tilde.items():
                     if value == operacion:
                         self.resultado_decifrado.append(key)
-            elif operacion <= 181:
+            elif operacion <= 182:
                 lista_especiales = list(
                     self.abecedario.get_element("Caracteres_especiales")  # type:ignore
                 )
@@ -253,8 +255,8 @@ class RSA:
 
 if __name__ == "__main__":
     rsa = RSA()
-    mensaje = "Hola, este es un mensaje de prueba para el cifrado RSA."
+    mensaje = "prueba  de simbolos: !!@#$%^&*( ')_:"
     rsa.cifrar(mensaje, [26123, 6731])
     print("Mensaje cifrado: ", rsa.resultado_cifrado)
-    print("Mensaje decifrado: ", rsa.decifrar(rsa.resultado_cifrado, [26123, 3971]))
+    print("Mensaje decifrado: ", rsa.descifrar(rsa.resultado_cifrado, [26123, 3971]))
     # print(rsa.generar_clave())
