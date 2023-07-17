@@ -13,7 +13,7 @@ Colection = db["Users"]  # Nombre de la coleccion
 
 
 # Funcion que verifica si el usuario existe
-def Verificar_user(user, password):
+def Verificar_user(user: str, password: str):
     resultado = Colection.find_one({"Name": user, "Password": password})
     if resultado != None:
         return True
@@ -22,7 +22,7 @@ def Verificar_user(user, password):
 
 
 # Funcion que inserta un usuario en la base de datos
-def Insertar_user(user, password):
+def Insertar_user(user: str, password: str):
     try:
         resultado = Colection.find_one({"Name": user, "Password": password})
         if resultado != None:
