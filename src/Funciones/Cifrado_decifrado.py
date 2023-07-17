@@ -1,8 +1,9 @@
 # import time
 import secrets
 
-# from Funciones.Manipulador_json import manage_json
-from Manipulador_json import manage_json
+from Funciones.Manipulador_json import manage_json
+
+# from Manipulador_json import manage_json
 
 
 # ? Tener en cuanta que el cifrado ARS necesita que n que es (p*q) sea mayor que el mensaje a cifrar
@@ -276,9 +277,34 @@ class RSA:
             str(resultado_cifrado[component_A + 2 : component_A + 2 + component_C])
         )
 
-        cifrado.append(int(resultado_cifrado[component_D : component_D + component_D]))
+        cifrado.append(
+            int(
+                resultado_cifrado[
+                    len(
+                        str(component_A)
+                        + str(component_B)
+                        + str(component_C)
+                        + str(component_D)
+                    ) : len(
+                        str(component_A)
+                        + str(component_B)
+                        + str(component_C)
+                        + str(component_D)
+                    )
+                    + component_D
+                ]
+            )
+        )
 
-        indice = int(component_D + component_D)
+        indice = int(
+            len(
+                str(component_A)
+                + str(component_B)
+                + str(component_C)
+                + str(component_D)
+            )
+            + component_D
+        )
         repeat = int(1)
         ciclo_repeat = int(0)
         contador = int(0)
@@ -341,10 +367,12 @@ class RSA:
 
 # if __name__ == "__main__":
 #     rsa = RSA()
-#     mensaje = "prueba  de simbolos: !!@#$%^&*( ')_:"
+#     mensaje = (
+#         "Hola gente como estamos todo bien me llamo Toby2003 soy lo mejor del mundo"
+#     )
 #     rsa.cifrar(mensaje, [26123, 6731])
 #     print("Mensaje cifrado: ", rsa.resultado_cifrado_final)
 #     print(
 #         "Mensaje decifrado: ", rsa.descifrar(rsa.resultado_cifrado_final, [26123, 3971])
 #     )
-#     print(rsa.generar_clave())
+#     # print(rsa.generar_clave())

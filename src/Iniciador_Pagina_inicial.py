@@ -111,6 +111,6 @@ class Pagina_inicial(QMainWindow):
             output = str(self.rsa.cifrar(mensaje, self.key_public))
             self.plainTextEdit_output.setPlainText(output)
         elif self.Combo_box_ci_de.currentText() == "Descifrar":
-            mensaje = json.loads(self.plainTextEdit_input.toPlainText())
+            mensaje = self.plainTextEdit_input.toPlainText()
             output = str(self.rsa.descifrar(mensaje, self.key_private))
             self.plainTextEdit_output.setPlainText(output)
