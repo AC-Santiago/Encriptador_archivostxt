@@ -23,16 +23,17 @@ class RSA:
         self.select = int()
 
         self.resultado_cifrado = list()
+        self.resultado_cifrado_final = str()
         self.resultado_decifrado = list()
 
         ## Abre el archivo json
         self.path = "src/Archivos.json/Abecedario.json"
         self.abecedario = manage_json(self.path)
         self.rules = list()
-        self.rulesFinal = list()
+        self.rules_Final = list()
 
     #! Verifica que los numeros sean primos
-    def primo_check(self, a):
+    def primo_check(self, a: int):
         contador = int(0)
         for i in range(1, a + 1):
             residuo = int(a % i)
@@ -63,13 +64,13 @@ class RSA:
             return self.p, self.q, self.n, self.phi
 
     #! funcion que muestra los maximos como un divisor de dos numeros
-    def maximo_comun_divisor(self, a, b):
+    def maximo_comun_divisor(self, a: int, b: int):
         while b != 0:
             a, b = b, a % b  # * funciona con el algoritmo de euclides
         return a
 
     #! funcion que hace una lista de los numeros que den como maximos como un divisor de 1
-    def lista_maximo_comun_divisor(self, a):
+    def lista_maximo_comun_divisor(self, a: int):
         lista = []
         for i in range(2, a):
             if self.maximo_comun_divisor(a, i) == 1:
@@ -123,7 +124,7 @@ class RSA:
         elif self.letter in special_letter:
             self.select = 6
 
-    def cifrar(self, mensaje, Llave_publica):
+    def cifrar(self, mensaje: str, Llave_publica: list):
         self.longitud_mensaje = len(mensaje)
         self.mensaje_cifrado = str(mensaje)
         self.n = Llave_publica[0]
@@ -158,7 +159,7 @@ class RSA:
             if self.rules[i] == self.rules[i + 1]:
                 contador += 1
             else:
-                self.rulesFinal.append(
+                self.rules_Final.append(
                     int(
                         str(len(str(contador)))
                         + str(contador)
@@ -167,7 +168,7 @@ class RSA:
                     )
                 )
                 contador = 1
-        self.rulesFinal.append(
+        self.rules_Final.append(
             int(
                 str(len(str(contador)))
                 + str(contador)
@@ -175,15 +176,30 @@ class RSA:
                 + str(self.rules[-1])
             )
         )
-        return self.resultado_cifrado
+        element = str(self.rules_Final[0]) + str(self.resultado_cifrado[0])
+        self.resultado_cifrado[0] = int(element)
 
-    def descifrar(self, mensaje_cifrado, Llave_privada):
-        self.resultado_cifrado = mensaje_cifrado
-        rango = len(self.resultado_cifrado)
+        component_A = int(0)
+        component_B = int(0)
+
+        for i in range(1, len(self.rules_Final)):
+            component_A = int(str(self.rules_Final[i - 1])[0:1])
+            component_B += int(str(self.rules_Final[i - 1])[1 : component_A + 1])
+            element = str(self.rules_Final[i]) + str(
+                self.resultado_cifrado[component_B]
+            )
+            self.resultado_cifrado[component_B] = int(element)
+
+        self.resultado_cifrado_final = "".join(str(e) for e in self.resultado_cifrado)
+        return self.resultado_cifrado_final
+
+    def descifrar(self, mensaje_cifrado, Llave_privada: list):
+        self.lista_cifrado = self.organizar_mensajeC(mensaje_cifrado)
+        rango = len(self.lista_cifrado)
         self.n = Llave_privada[0]
         self.d = Llave_privada[1]
         for i in range(rango):
-            letra_cifrado = int(self.resultado_cifrado[i])
+            letra_cifrado = int(self.lista_cifrado[i])
             operacion = (letra_cifrado**self.d) % self.n
             if operacion <= 26:
                 lista_letras = list(
@@ -249,14 +265,86 @@ class RSA:
         mesanje_decifrado = "".join(self.resultado_decifrado)
         return mesanje_decifrado
 
-    def organizar_mensajeC(self):
-        pass
+    def organizar_mensajeC(self, mensaje_cifrado: str):
+        resultado_cifrado = str(mensaje_cifrado)
+        cifrado = []
+
+        component_A = int(str(resultado_cifrado[0:1]))
+        component_B = int(str(resultado_cifrado[1 : component_A + 1]))
+        component_C = int(str(resultado_cifrado[component_A + 1 : component_A + 2]))
+        component_D = int(
+            str(resultado_cifrado[component_A + 2 : component_A + 2 + component_C])
+        )
+
+        cifrado.append(int(resultado_cifrado[component_D : component_D + component_D]))
+
+        indice = int(component_D + component_D)
+        repeat = int(1)
+        ciclo_repeat = int(0)
+        contador = int(0)
+        first_time = True
+        for i in range(1, len(resultado_cifrado)):
+            try:
+                contador += 1
+                if contador == component_B and first_time == True:
+                    ciclo_repeat = component_B
+                    first_time = False
+                if repeat == component_B and ciclo_repeat >= 0:
+                    component_A = int(resultado_cifrado[indice : indice + 1])
+                    component_B = int(
+                        resultado_cifrado[indice + 1 : indice + 1 + component_A]
+                    )
+                    component_C = int(
+                        resultado_cifrado[
+                            indice + 1 + component_A : indice + 2 + component_A
+                        ]
+                    )
+                    component_D = int(
+                        resultado_cifrado[
+                            indice
+                            + 2
+                            + component_A : indice
+                            + 2
+                            + component_A
+                            + component_C
+                        ]
+                    )
+                    rule = len(
+                        str(component_A)
+                        + str(component_B)
+                        + str(component_C)
+                        + str(component_D)
+                    )
+                    cifrado.append(
+                        int(
+                            resultado_cifrado[
+                                indice + rule : indice + rule + component_D
+                            ]
+                        )
+                    )
+                    indice += rule + component_D
+                    ciclo_repeat = component_B
+                    repeat = 1
+
+                else:
+                    cifrado.append(
+                        int(resultado_cifrado[indice : indice + component_D])
+                    )
+                    indice += component_D
+                    repeat += 1
+                    ciclo_repeat -= 1
+
+            except:
+                break
+        return cifrado
 
 
-if __name__ == "__main__":
-    rsa = RSA()
-    mensaje = "prueba  de simbolos: !!@#$%^&*( ')_:"
-    rsa.cifrar(mensaje, [26123, 6731])
-    print("Mensaje cifrado: ", rsa.resultado_cifrado)
-    print("Mensaje decifrado: ", rsa.descifrar(rsa.resultado_cifrado, [26123, 3971]))
-    # print(rsa.generar_clave())
+# if __name__ == "__main__":
+#     rsa = RSA()
+#     mensaje = "prueba  de simbolos: !!@#$%^&*( ')_:"
+#     rsa.cifrar(mensaje, [26123, 6731])
+#     print("Mensaje cifrado: ", rsa.resultado_cifrado_final)
+#     print(
+#         "Mensaje decifrado: ", rsa.descifrar(rsa.resultado_cifrado_final, [26123, 3971])
+#     )
+#     print(rsa.generar_clave())
