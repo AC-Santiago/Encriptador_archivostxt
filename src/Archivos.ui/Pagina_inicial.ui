@@ -594,7 +594,8 @@ QLabel#Label_imagenU{
           </size>
          </property>
          <property name="styleSheet">
-          <string notr="true">QFrame#frame_keys{
+          <string notr="true">
+QFrame#frame_keys{
 	border: 11px solid #D6D6D6;
 	border-radius: 20px;
 	Background:#c9cece
@@ -625,11 +626,7 @@ QComboBox#Combo_box_ci_de{
 	Background:#edeeee ;
 }
 
-QComboBox::item{
-    border: 30px;
-	font: normal 16px/normal Arial, Helvetica, sans-serif;
-	
-}
+
 QLineEdit{
 	border-radius: 20px;
 	font: normal 16px/1 Arial, Helvetica, sans-serif;

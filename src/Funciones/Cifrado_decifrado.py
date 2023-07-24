@@ -1,9 +1,6 @@
-# import time
 import secrets
 
 from Funciones.Manipulador_json import manage_json
-
-# from Manipulador_json import manage_json
 
 
 # ? Tener en cuanta que el cifrado ARS necesita que n que es (p*q) sea mayor que el mensaje a cifrar
@@ -363,16 +360,3 @@ class RSA:
             except:
                 break
         return cifrado
-
-
-# if __name__ == "__main__":
-#     rsa = RSA()
-#     mensaje = (
-#         "Hola gente como estamos todo bien me llamo Toby2003 soy lo mejor del mundo"
-#     )
-#     rsa.cifrar(mensaje, [26123, 6731])
-#     print("Mensaje cifrado: ", rsa.resultado_cifrado_final)
-#     print(
-#         "Mensaje decifrado: ", rsa.descifrar(rsa.resultado_cifrado_final, [26123, 3971])
-#     )
-#     # print(rsa.generar_clave())
