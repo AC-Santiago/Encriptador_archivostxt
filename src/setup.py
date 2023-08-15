@@ -23,3 +23,6 @@ if __name__ == "__main__":
         window = Inicio_sesion()
         window.show()
         sys.exit(app.exec_())
+
+# * Llave de cifrado:
+# ([275533, 96889], [275533, 247237])
