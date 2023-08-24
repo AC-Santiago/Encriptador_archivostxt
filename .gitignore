@@ -2,8 +2,6 @@
 __pycache__/
 __pypackages__/
 *.pyc
-src/__pycache__/
-src/Funciones/__pycache__/
 
 # Environments
 .env
