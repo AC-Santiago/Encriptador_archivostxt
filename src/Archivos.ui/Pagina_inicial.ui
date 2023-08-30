@@ -458,7 +458,7 @@ QLabel#Label_imagenU{
        <item row="2" column="0">
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>4</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="Page_Cic_Dec">
           <layout class="QHBoxLayout" name="horizontalLayout_11">
@@ -921,7 +921,113 @@ QLineEdit{
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="Page_Claves"/>
+         <widget class="QWidget" name="Page_Claves">
+          <property name="styleSheet">
+           <string notr="true">QPushButton{
+  padding: 10px 20px;
+  border: 1px solid rgba(90,90,90,1);
+  border-radius: 12px;
+  font: normal 16px/normal Arial, Helvetica, sans-serif;
+  color: rgba(0, 0, 0,1);
+  background-position: 50% 50%;
+  background-origin: padding-box;
+  background-clip: border-box;
+ background-color: rgb(246, 245, 244);
+}
+QPushButton::hover{
+	background-color: rgb(192, 191, 188);
+}
+QPlainTextEdit{
+ 	padding: 10px 20px;
+  	border: 1px solid #b7b7b7;
+  	border-radius: 14px;
+  	font: normal 16px/normal Arial, Helvetica, sans-serif;
+  	color: rgba(0,0,0,1);
+  	background: rgba(252,252,252,1);
+}</string>
+          </property>
+          <widget class="QWidget" name="">
+           <property name="geometry">
+            <rect>
+             <x>60</x>
+             <y>20</y>
+             <width>501</width>
+             <height>371</height>
+            </rect>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_12">
+            <item>
+             <widget class="QPushButton" name="pushButton_2">
+              <property name="text">
+               <string>Generar llaves</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_7">
+              <item>
+               <widget class="QLabel" name="label_llavePU">
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="text">
+                 <string>Llave Publica</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPlainTextEdit" name="plainTextEdit">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_llavePR">
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="text">
+                 <string>Lave Privada</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPlainTextEdit" name="plainTextEdit_2">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>50</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </widget>
          <widget class="QWidget" name="Page_Passwords"/>
          <widget class="QWidget" name="Page_Archivos"/>
          <widget class="QWidget" name="Page_Opciones"/>

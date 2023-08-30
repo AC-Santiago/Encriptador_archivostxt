@@ -30,6 +30,23 @@ class Pagina_inicial(QMainWindow):
         self.Combo_box_ci_de.currentTextChanged.connect(self.combo_box_cif_dec)
         self.Butto_Cifrar_Decifrar.clicked.connect(self.Cifrar_Decifrar)
 
+        #! Botones con cambio de pagina
+        self.Button_cifrar_decifrar.clicked.connect(
+            lambda: self.stackedWidget.setCurrentWidget(self.Page_Cic_Dec)
+        )
+        self.Button_claves.clicked.connect(
+            lambda: self.stackedWidget.setCurrentWidget(self.Page_Claves)
+        )
+        self.Button_mis_archivos.clicked.connect(
+            lambda: self.stackedWidget.setCurrentWidget(self.Page_Archivos)
+        )
+        self.Button_opciones.clicked.connect(
+            lambda: self.stackedWidget.setCurrentWidget(self.Page_Opciones)
+        )
+        self.Button_mis_passwords.clicked.connect(
+            lambda: self.stackedWidget.setCurrentWidget(self.Page_Passwords)
+        )
+
     def abrir_menu(self):
         # Obtener el ancho del frame (Frame_menu)
         ancho = self.Frame_menu.width()
