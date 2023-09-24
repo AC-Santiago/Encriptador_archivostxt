@@ -1,0 +1,13 @@
+{%extends 'components/Encabezado.html'%} {%block content%}
+<h1>Bienvenido a sus llaves</h1>
+<!-- <h2>Estas son sus llaves</h2> -->
+<h2>Estas son sus llaves</h2>
+{%for key in keys%}
+
+<article>
+  <h2>le pertenece a : {{ key.user }}</h2>
+  <li>{{ key.name_key }}</li>
+  <li>{{ key.public_key }}</li>
+  <li>{{ key.private_key }}</li>
+</article>
+{%endfor%}{%endblock%}

@@ -1,22 +1,28 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
+from .models import users, keys, passwords
+
 
 # Create your views here.
 
 
-def login(request, user_name):
-    name_user = user_name
+def login(request):
+    name_user = "Toby2003"
     return render(request, "Login_U.html", {"name_user": name_user})
 
 
 def register(request):
-    return HttpResponse("<h1>Register Page</h1>")
+    return render(request, "Register_U.html")
 
 
-def keys(request):
-    return HttpResponse("<h1>Keys Page</h1>")
+def keys_page(request):
+    # SantiagoA2003
+    # Toby2003
+    user = users.objects.get(username="Toby2003")
+    keys_user = keys.objects.filter(user__pk=user.pk)
+    return render(request, "Keys_page.html", {"keys": keys_user})
 
 
-def passwords(request):
-    return HttpResponse("<h1>Password Page</h1>")
+def passwords_page(request):
+    return render(request, "Passwords_page.html")
