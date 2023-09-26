@@ -1,14 +1,29 @@
-<nav>
-  <ul>
-    <li><a href="/Dec_Cif/home">Home</a></li>
-    <li><a href="/users/login">Login</a></li>
-    <li>
-      <a href="/users/register">Register</a>
-    </li>
-    <li><a href="/users/keys">Keys</a></li>
-    <li>
-      <a href="/users/passwords">Passwords</a>
-    </li>
-  </ul>
-</nav>
-{% block content %} {% endblock %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'styles/Encabezado.css' %}">
+  <title>Django Project</title>
+</head>
+<body>
+  <div class="Encabezado">
+    <nav>
+      <ul>
+        <li><a href="/Dec_Cif/home">Home</a></li>
+        <li><a href="/users/login">Login</a></li>
+        <li>
+          <a href="/users/register">Register</a>
+        </li>
+        <li><a href="/users/keys">Keys</a></li>
+        <li>
+          <a href="/users/passwords">Passwords</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+  
+  {% block content %} {% endblock %}
+</body>
+</html>
