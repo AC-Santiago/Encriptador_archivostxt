@@ -37,8 +37,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "Dec_Cif",
-    "Users_EncrytedPage",
+    # Apps
+    "core.Dec_Cif",
+    "core.Users_EncrytedPage",
+    "core.Keys_Users",
+    "core.Passwords_Users",
 ]
 
 MIDDLEWARE = [
@@ -125,3 +128,6 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+#Nuevo modelo de usuario
+AUTH_USER_MODEL = "Users_EncrytedPage.Users_EncrytedPage"
