@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (Encriptador_archivostxt) (2)" project-jdk-type="Python SDK" />
+  <component name="Black">
+    <option name="enabledOnReformat" value="true" />
+    <option name="enabledOnSave" value="true" />
+    <option name="sdkUUID" value="f90ab340-5f0c-4cc8-82a0-3eaf06bcb1aa" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (Encriptador_archivostxt)" project-jdk-type="Python SDK" />
+  <component name="PyCharmProfessionalAdvertiser">
+    <option name="shown" value="true" />
+  </component>
 </project>

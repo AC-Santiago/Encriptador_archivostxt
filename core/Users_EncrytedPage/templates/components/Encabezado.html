@@ -11,14 +11,14 @@
   <div class="Encabezado">
     <nav>
       <ul>
-        <li><a href="/Dec_Cif/home">Home</a></li>
-        <li><a href="/users/login">Login</a></li>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'login' %}">Login</a></li>
         <li>
-          <a href="/users/register">Register</a>
+          <a href="{% url 'register' %}">Register</a>
         </li>
-        <li><a href="/users/keys">Keys</a></li>
+        <li><a href="{% url 'Keys_Page' %}">Keys</a></li>
         <li>
-          <a href="/users/passwords">Passwords</a>
+          <a href="{% url 'Passwords_Page' %}">Passwords</a>
         </li>
       </ul>
     </nav>
