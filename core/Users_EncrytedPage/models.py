@@ -7,7 +7,7 @@ class Users_EncrytedPage(AbstractUser):
 
     def __str__(self):
         return self.username
-    
+
     def get_image(self):
         if self.image_profile:
             return self.image_profile.url

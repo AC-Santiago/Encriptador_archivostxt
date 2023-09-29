@@ -1,6 +1,7 @@
 from django.db import models
 from core.Users_EncrytedPage.models import Users_EncrytedPage
 
+
 # Create your models here.
 class Passwords_users(models.Model):
     user = models.ForeignKey(Users_EncrytedPage, on_delete=models.CASCADE)
@@ -13,4 +14,3 @@ class Passwords_users(models.Model):
 
     def __str__(self):
         return self.password_name + ' '+ self.user.username
-    

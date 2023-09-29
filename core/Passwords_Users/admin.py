@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import *
+from core.Passwords_Users.models import Passwords_users
 
 # Register your models here.
-
 admin.site.register(Passwords_users)
