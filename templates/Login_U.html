@@ -1,3 +1,11 @@
-{%extends 'components/Encabezado.html'%} {%block content%}
-<h1>Bienvenido {{ name_user }}</h1>
-{%endblock%}
+{% extends 'components/Encabezado.html' %} {% block content %}
+    <h1>login</h1>
+    {% if error %}
+        <p><strong>{{ error }}</strong></p>
+    {% endif %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
+{% endblock %}

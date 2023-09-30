@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="Base de datos temporal" uuid="964b6d98-d989-46ea-bad9-eb1b98aa79f2">
+    <data-source source="LOCAL" name="Base de datos de EncrytedPage" uuid="37c0f2f2-0121-4592-9065-d6adeb1dec39">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>
