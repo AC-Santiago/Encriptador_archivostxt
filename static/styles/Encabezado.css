@@ -1,0 +1,37 @@
+body{
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    font-family:Arial, Helvetica, sans-serif, Times, serif;
+}
+
+.Encabezado{
+    background-color: #000000;
+    color: antiquewhite;
+    font-size: 30px;
+    text-align: center;
+    padding: 10px;
+
+}
+
+.Encabezado ul{
+    display: flex;
+    justify-content: space-around;
+    /* align-items: center; */
+
+}
+
+.Encabezado ul li {
+    list-style: none;
+    padding: 10px;
+    margin: 0px;
+}
+
+.Encabezado ul li a{
+    text-decoration: none;
+    color: antiquewhite;
+    font-size: 20px;
+}
+
+.Encabezado ul li a:hover{
+    color: rgb(59, 218, 19);
+}
