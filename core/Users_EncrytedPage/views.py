@@ -21,7 +21,7 @@ def register_page(request):
                 )
                 user.save()
                 login(request, user)
-                return redirect("login")
+                return redirect("home")
             except IntegrityError:
                 return render(
                     request, "Register_U.html", {"error": "Username already taken"}

@@ -1,24 +1,29 @@
-{%extends 'components/Encabezado.html'%} {%block content%}
-<div class="Registro">
-    <h1>Registro</h1>
-  <form action="" method="post">
-    {% if error %}
-    	<h1>{{ error }}</h1>
-    {% endif %}
+{% extends 'components/Encabezado.html' %} {% block content %}
+    <div class="Registro">
+        <h1>Registro</h1>
+        <form action="" method="post">
+            {% if error %}
+                <h1>{{ error }}</h1>
+            {% endif %}
 
-    {%csrf_token%}
-    <label for="id_email">Email</label>
-    <input type="email" name="email" id="id_email" required autofocus autocomplete="email"/>
-    <label for="id_username">Username</label>
-    <input type="text" name="username" id="id_username" autocomplete="username" required maxlength="150" />
-    <label for="id_password">Password</label>
-    <input type="password" name="password" id="id_password" required/>
-    <label for="id_password2">Password confirmation</label>
-    <input type="password" name="password2" id="id_password2" required/>
+            {% csrf_token %}
 
 
-    <button> Registro </button>
-  </form>
-</div>
+            <p><label for="id_email">Email</label></p>
+            <p><input type="email" name="email" id="id_email" required autofocus autocomplete="email"/></p>
+            <p><label for="id_username">Username</label></p>
+            <p><input type="text" name="username" id="id_username" autocomplete="username" required maxlength="150"/>
+            </p>
+            <p><label for="id_password">Password</label></p>
+            <p><input type="password" name="password" id="id_password" required/></p>
+            <p><label for="id_password2">Password confirmation</label></p>
+            <p><input type="password" name="password2" id="id_password2" required/></p>
+            <p>
+                <button> Registro</button>
+            </p>
 
-{%endblock%}
+
+        </form>
+    </div>
+
+{% endblock %}

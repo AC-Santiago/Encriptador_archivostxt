@@ -1,11 +1,12 @@
 import secrets
 
-from Funciones.Manipulador_json import manage_json
+
+from Manipulador_json import manage_json
 
 
-# ? Tener en cuanta que el cifrado ARS necesita que n que es (p*q) sea mayor que el mensaje a cifrar
+# ? Tener en cuanta que el cifrado ARS necesita que n que es (p*q) sea mayor que el mensaje rsa cifrar
 # ? ejemplo si el cuadro de referencia contempla 65 caracteres n no puede ser menor
-# ? 0<=m<n donde m es la letra a cifrar y n es el cuadro de referencia
+# ? 0<=m<n donde m es la letra rsa cifrar y n es el cuadro de referencia
 class RSA:
     def __init__(self):
         self.p = int()  ## numero primo
@@ -25,7 +26,8 @@ class RSA:
         self.resultado_decifrado = list()
 
         ## Abre el archivo json
-        self.path = "src/Archivos.json/Abecedario.json"
+        self.path = "../Archivos.json/Abecedario.json"
+
         self.abecedario = manage_json(self.path)
         self.rules = list()
         self.rules_Final = list()
@@ -46,7 +48,7 @@ class RSA:
 
     #! Genera los numeros primos y los componentes esenciales del cifrado como n y phi(n)
     def generar_bases(self):
-        path = "src/Archivos.json/Numeros_primos.json"
+        path = "../Archivos.json/Numeros_primos.json"
         Numero_primo = manage_json(path)
         while self.p == self.q:
             self.p = secrets.choice(
@@ -84,7 +86,7 @@ class RSA:
             operacion_d2 = operacion_d1 / self.e
             if operacion_d2.is_integer():
                 self.d = int(operacion_d2)
-                # * evita que d sea igual a e
+                # * evita que d sea igual rsa e
                 if self.d != self.e:
                     break
         return [self.n, self.e], [self.n, self.d]
@@ -360,3 +362,20 @@ class RSA:
             except:
                 break
         return cifrado
+
+
+if __name__ == "__main__":
+    print("Hola mundo")
+    rsa = RSA()
+    rsa.generar_bases()
+    llave_publica, llave_privada = rsa.generar_clave()
+    print(f"Llave publica: {llave_publica}")
+    print(f"Llave privada {llave_privada}")
+
+    mensaje = "Hola mundo"
+
+    mensaje_cifrado = rsa.cifrar(mensaje, llave_publica)
+    print(f"Mensaje cifrado: {mensaje_cifrado}")
+
+    mensaje_descifrado = rsa.descifrar(mensaje_cifrado, llave_privada)
+    print(f"Mensaje descifrado: {mensaje_descifrado}")
