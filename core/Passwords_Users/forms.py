@@ -12,3 +12,10 @@ class PasswordsUsersform(ModelForm):
             "password_origin",
             "password",
         ]
+
+    #! Desactiva el aoutocompletado de los campos del formulario
+    def __init__(self, *args, **kwargs):
+        super(PasswordsUsersform, self).__init__(*args, **kwargs)
+        self.fields["password"].widget.attrs.update({"autocomplete": "off"})
+        self.fields["password_name"].widget.attrs.update({"autocomplete": "off"})
+        self.fields["password_origin"].widget.attrs.update({"autocomplete": "off"})

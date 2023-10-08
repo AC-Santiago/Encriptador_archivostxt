@@ -17,7 +17,7 @@ def primo_check(a):
 
 
 def Gene_pri():
-    path = "src/Archivos.json"
+    path = "../Archivos.json"
     Archivo = manage_json(path)
     lista = list()
     for i in range(100, 1000):
