@@ -1,8 +1,30 @@
 {% extends 'components/Encabezado.html' %} {% block content %}
-    {% if user.is_authenticated %}
-        <h1>Bienvenido {{ User }}</h1>
-    {% else %}
-        <h1>Inicio</h1>
-    {% endif %}
+    <main class="container py-5">
+        <section class="card card-body">
+            {% if user.is_authenticated %}
+                <h1 class="display-1">Bienvenido {{ User }}</h1>
 
+                <div class="row">
+                    <div class="col-md-12">
+                        <p class="text-center">{{ User }} bienvenido, si quiere ir directo a cualquiera de nuestros
+                            servicios puede dirigirse al menu de la parte superior o seleccionarlo a continuación.</p>
+                    </div>
+                </div>
+                </section>
+            {% else %}
+                <h1 class="display-1">Inicio</h1>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p class="text-center">Si quieres guardar tus contraseñas o cifrarlas y poderlas proteger de los
+                            demás para una mayor
+                            privacidad esta página es para ti.</p>
+                    </div>
+                </div>
+                <div class="mb-2 text-center ">
+                    <a class="btn btn-dark mx-2" href="{% url 'login' %}">Inicio sesión</a>
+                    o
+                    <a class="btn btn-outline-dark mx-2" href="{% url 'register' %}">Registro</a>
+                </div>
+            {% endif %}
+    </main>
 {% endblock %}

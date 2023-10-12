@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from .models import Users_EncrytedPage as Users
 
@@ -54,6 +55,7 @@ def login_page(request):
         return render(request, "Login_U.html", {"form": AuthenticationForm})
 
 
+@login_required
 def sign_out(request):
     logout(request)
     return redirect("login")

@@ -1,0 +1,25 @@
+{% extends 'components/Encabezado.html' %} {% block content %}
+    <h1>Cifrar y Descifrar</h1>
+
+    <form name="dec_cif_form" action="" method="post">
+        {% csrf_token %}
+        Seleccione la acción a realizar
+        <label>
+            <select>
+                <option value="1">Cifrar</option>
+                <option value="2">Descifrar</option>
+            </select>
+        </label>
+        <div class="Cifrar">
+            <label>Cifrar
+                <input type="hidden" name="Cifrar"><textarea name="text_cifrar" id="" cols="30"
+                                                             rows="10"></textarea></label>
+        </div>
+        <div class="Descifrar">
+            <label> Descifrar
+                <input type="hidden" name="Descifrar"><textarea name="text_descifrar" id="" cols="30"
+                                                                rows="10"></textarea></label>
+        </div>
+
+    </form>
+{% endblock %}

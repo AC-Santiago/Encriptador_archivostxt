@@ -1,11 +1,33 @@
 {% extends 'components/Encabezado.html' %} {% block content %}
-    <h1>login</h1>
-    {% if error %}
-        <p><strong>{{ error }}</strong></p>
-    {% endif %}
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Login</button>
-    </form>
+    <main class="container mt-5" style="min-width: 400px;width: 30%" id="login_container">
+        <section class="card card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="display-1 text-center">Inicio sesión</h1>
+                    {% if error %}
+                        <p><strong>{{ error }}</strong></p>
+                    {% endif %}
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="username" id="floatingInput"
+                                   placeholder="name@example.com"
+                                   required>
+                            <label for="floatingInput">Usuario</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="password" class="form-control" name="password" id="floatingPassword"
+                                   placeholder="Password"
+                                   required>
+                            <label for="floatingPassword">Contraseña</label>
+                        </div>
+                        <div class="mt-4 mb-3 text-center ">
+                            <button class="btn btn-dark mx-2" type="submit">Inicio sesión</button>
+                            <a class="btn btn-outline-dark mx-2" href="{% url 'register' %}">Registro</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
 {% endblock %}

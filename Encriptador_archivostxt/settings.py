@@ -121,6 +121,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+
+# URL de donde esta el login
+LOGIN_URL = "login"
+
 # Lista de directorios donde se encuentran los archivos estaticos
 STATICFILES_DIRS = [BASE_DIR / "static", "static/styles", "static/images"]
 # Default primary key field type
