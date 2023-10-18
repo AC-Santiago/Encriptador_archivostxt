@@ -5,4 +5,5 @@ urlpatterns = [
     path("passwords/", views.passwords_page, name="Passwords_Page"),
     path("create/", views.create_password, name="Create_Password"),
     path("password/<int:password_id>/", views.password_detail, name="password_detail"),
+    path("pin/", views.pin_validator, name="pin_validator"),
 ]

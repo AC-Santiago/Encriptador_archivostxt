@@ -23,7 +23,7 @@ class RSA:
 
         self.resultado_cifrado = list()
         self.resultado_cifrado_final = str()
-        self.resultado_decifrado = list()
+        self.resultado_descifrado = list()
 
         ## Abre el archivo json
         self.path = "../Archivos.json/Abecedario.json"
@@ -131,7 +131,7 @@ class RSA:
         self.e = Llave_publica[1]
 
         operacion = int()
-        rule = int()  # *cantidad de cifras que tiene el numero de la letra cifrada
+        rule = int()  # *cantidad de cifras que tiene el número de la letra cifrada
 
         opciones = {
             1: "Mayusculas",
@@ -210,7 +210,7 @@ class RSA:
                 # * Busca la letra que corresponde al numero
                 for key, value in dict_letras.items():
                     if value == operacion:
-                        self.resultado_decifrado.append(key)
+                        self.resultado_descifrado.append(key)
             elif operacion <= 52:
                 lista_letras = list(
                     self.abecedario.get_element("Minusculas")  # type:ignore
@@ -220,7 +220,7 @@ class RSA:
                 # * Busca la letra que corresponde al numero
                 for key, value in dict_letras.items():
                     if value == operacion:
-                        self.resultado_decifrado.append(key)
+                        self.resultado_descifrado.append(key)
             elif operacion <= 62:
                 lista_numeros = list(
                     self.abecedario.get_element("Numeros")  # type:ignore
@@ -230,7 +230,7 @@ class RSA:
                 # * Busca el numero que corresponde al numero
                 for key, value in dict_numeros.items():
                     if value == operacion:
-                        self.resultado_decifrado.append(key)
+                        self.resultado_descifrado.append(key)
             elif operacion <= 102:
                 lista_simbolos = list(
                     self.abecedario.get_element("Simbolos_especiales")  # type:ignore
@@ -240,7 +240,7 @@ class RSA:
                 # * Busca el simbolo que corresponde al numero
                 for key, value in dict_simbolos.items():
                     if value == operacion:
-                        self.resultado_decifrado.append(key)
+                        self.resultado_descifrado.append(key)
             elif operacion <= 112:
                 lista_tilde = list(
                     self.abecedario.get_element("Caracteres_tilde")  # type:ignore
@@ -250,7 +250,7 @@ class RSA:
                 # * Busca el caracter con tilde que corresponde al numero
                 for key, value in dict_tilde.items():
                     if value == operacion:
-                        self.resultado_decifrado.append(key)
+                        self.resultado_descifrado.append(key)
             elif operacion <= 182:
                 lista_especiales = list(
                     self.abecedario.get_element("Caracteres_especiales")  # type:ignore
@@ -260,9 +260,9 @@ class RSA:
                 # * Busca el caracter especial que corresponde al numero
                 for key, value in dict_especiales.items():
                     if value == operacion:
-                        self.resultado_decifrado.append(key)
+                        self.resultado_descifrado.append(key)
 
-        mesanje_decifrado = "".join(self.resultado_decifrado)
+        mesanje_decifrado = "".join(self.resultado_descifrado)
         return mesanje_decifrado
 
     def organizar_mensajeC(self, mensaje_cifrado: str):

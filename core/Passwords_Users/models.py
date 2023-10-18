@@ -11,6 +11,5 @@ class Passwords_users(models.Model):
     password_email = models.CharField(max_length=200)
     password_origin = models.CharField(max_length=100)
 
-
     def __str__(self):
-        return self.password_name + ' '+ self.user.username
+        return self.password_name + " " + self.user.username

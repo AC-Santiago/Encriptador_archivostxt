@@ -1,5 +1,6 @@
 from django import forms
 from .models import Passwords_users
+from ..Users_EncrytedPage.models import Users_EncrytedPage
 
 
 class PasswordsUsersForm(forms.ModelForm):
@@ -66,3 +67,27 @@ class PasswordsUsersForm(forms.ModelForm):
         self.fields["password"].widget.attrs.update({"autocomplete": "off"})
         self.fields["password_name"].widget.attrs.update({"autocomplete": "off"})
         self.fields["password_origin"].widget.attrs.update({"autocomplete": "off"})
+
+
+class MasterKeyForm(forms.ModelForm):
+    class Meta:
+        model = Users_EncrytedPage
+        fields = [
+            "master_key",
+        ]
+        widgets = {
+            "master_key": forms.TextInput(
+                attrs={
+                    "type": "text",
+                    "class": "form-control",
+                    "placeholder": "",
+                    "aria-label": "Pin",
+                    "aria-describedby": "addon-wrapping",
+                    "required": True,
+                    "maxlength": "8",
+                    "onkeypress": "return (event.charCode >= 48 && event.charCode <= 57)",
+                    "minlength": "8",
+                    "autocomplete": "off",
+                }
+            )
+        }

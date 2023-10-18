@@ -134,3 +134,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Nuevo modelo de usuario
 AUTH_USER_MODEL = "Users_EncrytedPage.Users_EncrytedPage"
+
+# Llave de encriptacion
+KEY = b'-vn-5Gh28Z3gcyfArydyKE-5uzXN8giqbesjhtVsJsQ='
