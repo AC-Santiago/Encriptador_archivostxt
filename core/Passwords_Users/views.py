@@ -4,10 +4,10 @@ from django.conf import settings
 from .forms import PasswordsUsersForm, MasterKeyForm
 from .models import Passwords_users
 from ..Users_EncrytedPage.models import Users_EncrytedPage as Users
-from cryptography.fernet import Fernet
+from .cryptography_module import decrypt_password, encrypt_password
 import bcrypt
 
-llave = Fernet(settings.KEY)
+llave = settings.KEY
 
 
 # Create your views here.
@@ -16,6 +16,14 @@ def passwords_page(request):
     passwords = Passwords_users.objects.filter(user=request.user)
     master_key: int = Users.objects.get(username=request.user).master_key
     if request.method == "POST":
+        if "form_delete_password" in request.POST:
+            password_id = request.POST.get("password_id")
+            print(password_id)
+            password = get_object_or_404(
+                Passwords_users, pk=password_id, user=request.user
+            )
+            password.delete()
+            return redirect("Passwords_Page")
         form = MasterKeyForm(request.POST)
         if form.is_valid():
             if master_key:
@@ -116,16 +124,16 @@ def create_password(request):
             password = request.POST.get("password")
 
             # encriptamos la contraseña y el email
-            encrypted_password = llave.encrypt(password.encode("utf-8"))
-            encrypted_email = llave.encrypt(email.encode("utf-8"))
+            encrypted_password = encrypt_password(password, llave)
+            encrypted_email = encrypt_password(email, llave)
 
             # creamos el objeto
             new_password = Passwords_users(
                 password_name=name,
                 password_username=username,
-                password_email=encrypted_email.decode("utf-8"),
+                password_email=encrypted_email,
                 password_origin=origin,
-                password=encrypted_password.decode("utf-8"),
+                password=encrypted_password,
                 user=request.user,
             )
             print(encrypted_password)
@@ -157,7 +165,13 @@ def password_detail(request, password_id):
         password = get_object_or_404(Passwords_users, pk=password_id, user=request.user)
         form = PasswordsUsersForm(request.POST, instance=password)
         try:
-            form.save()
+            password.password = encrypt_password(request.POST.get("password"), llave)
+            password.password_email = encrypt_password(
+                request.POST.get("password_email"), llave
+            )
+            form.password = password.password
+            form.password_email = password.password_email
+            password.save()
             return redirect("Passwords_Page")
         except ValueError:
             return render(
@@ -168,9 +182,15 @@ def password_detail(request, password_id):
     elif request.method == "GET":
         password = get_object_or_404(Passwords_users, pk=password_id, user=request.user)
         form = PasswordsUsersForm(instance=password)
-
+        password_decrypt = decrypt_password(password.password, llave)
+        email_decrypt = decrypt_password(password.password_email, llave)
         return render(
             request,
             "password_detail.html",
-            {"password": password, "form": form},
+            {
+                "password": password,
+                "form": form,
+                "password_email": email_decrypt,
+                "password_password": password_decrypt,
+            },
         )

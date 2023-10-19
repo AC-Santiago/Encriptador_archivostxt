@@ -126,7 +126,12 @@ STATIC_URL = "static/"
 LOGIN_URL = "login"
 
 # Lista de directorios donde se encuentran los archivos estaticos
-STATICFILES_DIRS = [BASE_DIR / "static", "static/styles", "static/images"]
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    "static/styles",
+    "static/images",
+    "static/scripts",
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -136,4 +141,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "Users_EncrytedPage.Users_EncrytedPage"
 
 # Llave de encriptacion
-KEY = b'-vn-5Gh28Z3gcyfArydyKE-5uzXN8giqbesjhtVsJsQ='
+KEY = b"-vn-5Gh28Z3gcyfArydyKE-5uzXN8giqbesjhtVsJsQ="
