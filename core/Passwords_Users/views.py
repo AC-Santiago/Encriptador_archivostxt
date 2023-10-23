@@ -11,6 +11,9 @@ llave = settings.KEY
 
 
 # Create your views here.
+
+
+# -------------------------PASSWORDS PAGE-------------------------#
 @login_required
 def passwords_page(request):
     passwords = Passwords_users.objects.filter(user=request.user)
@@ -32,7 +35,6 @@ def passwords_page(request):
                 return redirect_to_password_detail(request)
             elif "form_create_password" in request.POST:
                 return redirect_to_create_password(request)
-
         except ValueError:
             return redirect("Passwords_Page")
 
@@ -52,6 +54,7 @@ def passwords_page(request):
         )
 
 
+# """Elimina la contraseña"""
 def delete_password(request):
     password_id = request.POST.get("password_id")
     password = get_object_or_404(Passwords_users, pk=password_id, user=request.user)
@@ -59,6 +62,7 @@ def delete_password(request):
     return redirect("Passwords_Page")
 
 
+# """Redirecciona a la página de detalle de contraseña"""
 def redirect_to_password_detail(request):
     password_id = request.POST.get("password_id")
     response = redirect("password_detail", password_id=password_id)
@@ -66,12 +70,14 @@ def redirect_to_password_detail(request):
     return response
 
 
+# """Redirecciona a la página de crear contraseña"""
 def redirect_to_create_password(request):
     response = redirect("Create_Password")
     response.set_cookie("cookie_pin", "True")
     return response
 
 
+# """Hash la master key del usuario y la guarda en la base de datos"""
 def hash_and_save_master_key(request, master_key):
     hashed_master_key = bcrypt.hashpw(str(master_key).encode("utf-8"), bcrypt.gensalt())
     Users.objects.filter(username=request.user).update(
@@ -79,6 +85,7 @@ def hash_and_save_master_key(request, master_key):
     )
 
 
+# """ Crea el pin del usuario """
 def create_pin(request):
     master_key = request.POST.get("master_key")
     if master_key and len(str(master_key)) == 8:
@@ -87,7 +94,7 @@ def create_pin(request):
         return response
 
 
-@login_required
+# """ Válida el pin del usuario"""
 def pin_validator(request):
     if request.method == "POST":
         master_key: int = Users.objects.get(username=request.user).master_key
@@ -105,10 +112,12 @@ def pin_validator(request):
                 return resultado
         except ValueError:
             return redirect("Passwords_Page")
-    elif request.method == "GET":
-        return redirect("Passwords_Page")
 
 
+# -------------------------PASSWORDS PAGE--------------------------#
+
+
+# -------------------------CREATE PASSWORD-------------------------#
 @login_required
 def create_password(request):
     # obtiene la master key del usuario
@@ -148,18 +157,15 @@ def create_password(request):
                 {"form": PasswordsUsersForm, "error": "Invalid form"},
             )
     elif request.method == "GET":
-        if master_key is None:
-            return render(
-                request,
-                "CreatePasswords_page.html",
-                {"form": PasswordsUsersForm},
-            )
-        else:
-            return render(
-                request, "CreatePasswords_page.html", {"form": PasswordsUsersForm}
-            )
+        return render(
+            request, "CreatePasswords_page.html", {"form": PasswordsUsersForm}
+        )
 
 
+# -------------------------CREATE PASSWORD-------------------------#
+
+
+# -------------------------PASSWORD DETAIL-------------------------#
 @login_required
 def password_detail(request, password_id):
     if request.method == "POST":
@@ -183,16 +189,16 @@ def password_detail(request, password_id):
                 )
     elif request.method == "GET":
         password = get_object_or_404(Passwords_users, pk=password_id, user=request.user)
-        form = PasswordsUsersForm(instance=password)
-        password_decrypt = decrypt_password(password.password, llave)
-        email_decrypt = decrypt_password(password.password_email, llave)
         return render(
             request,
             "password_detail.html",
             {
                 "password": password,
-                "form": form,
-                "password_email": email_decrypt,
-                "password_password": password_decrypt,
+                "form": PasswordsUsersForm(instance=password),
+                "password_email": decrypt_password(password.password_email, llave),
+                "password_password": decrypt_password(password.password, llave),
             },
         )
+
+
+# -------------------------PASSWORD DETAIL-------------------------#
