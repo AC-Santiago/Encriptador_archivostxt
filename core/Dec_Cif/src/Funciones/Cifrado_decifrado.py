@@ -1,7 +1,7 @@
 import secrets
 
 
-from Manipulador_json import manage_json
+from .Manipulador_json import manage_json
 
 
 # ? Tener en cuanta que el cifrado ARS necesita que n que es (p*q) sea mayor que el mensaje rsa cifrar
@@ -26,7 +26,7 @@ class RSA:
         self.resultado_descifrado = list()
 
         ## Abre el archivo json
-        self.path = "../Archivos.json/Abecedario.json"
+        self.path = "core/Dec_Cif/src/Archivos.json/Abecedario.json"
 
         self.abecedario = manage_json(self.path)
         self.rules = list()
@@ -48,7 +48,7 @@ class RSA:
 
     #! Genera los numeros primos y los componentes esenciales del cifrado como n y phi(n)
     def generar_bases(self):
-        path = "../Archivos.json/Numeros_primos.json"
+        path = "core/Dec_Cif/src/Archivos.json/Numeros_primos.json"
         Numero_primo = manage_json(path)
         while self.p == self.q:
             self.p = secrets.choice(
@@ -364,18 +364,18 @@ class RSA:
         return cifrado
 
 
-if __name__ == "__main__":
-    print("Hola mundo")
-    rsa = RSA()
-    rsa.generar_bases()
-    llave_publica, llave_privada = rsa.generar_clave()
-    print(f"Llave publica: {llave_publica}")
-    print(f"Llave privada {llave_privada}")
-
-    mensaje = "Hola mundo"
-
-    mensaje_cifrado = rsa.cifrar(mensaje, llave_publica)
-    print(f"Mensaje cifrado: {mensaje_cifrado}")
-
-    mensaje_descifrado = rsa.descifrar(mensaje_cifrado, llave_privada)
-    print(f"Mensaje descifrado: {mensaje_descifrado}")
+# if __name__ == "__main__":
+#     print("Hola mundo")
+#     rsa = RSA()
+#     rsa.generar_bases()
+#     llave_publica, llave_privada = rsa.generar_clave()
+#     print(f"Llave publica: {llave_publica}")
+#     print(f"Llave privada {llave_privada}")
+#
+#     mensaje = "Hola mundo"
+#
+#     mensaje_cifrado = rsa.cifrar(mensaje, llave_publica)
+#     print(f"Mensaje cifrado: {mensaje_cifrado}")
+#
+#     mensaje_descifrado = rsa.descifrar(mensaje_cifrado, llave_privada)
+#     print(f"Mensaje descifrado: {mensaje_descifrado}")

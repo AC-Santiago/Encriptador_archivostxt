@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-v-mdh7nsqp*$@j$cbxe^l$k6+f43)q+ae%vxo(hc54rn+4wx23
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -122,10 +122,10 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-# URL de donde esta el login
+# URL de donde está el login
 LOGIN_URL = "login"
 
-# Lista de directorios donde se encuentran los archivos estaticos
+# Lista de directorios donde se encuentran los archivos statics
 STATICFILES_DIRS = [
     BASE_DIR / "static",
     "static/styles",

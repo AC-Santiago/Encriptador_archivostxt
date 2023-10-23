@@ -29,6 +29,8 @@ def register_page(request):
                 )
 
     elif request.method == "GET":
+        if request.user.is_authenticated:
+            return redirect("home")
         return render(request, "Register_U.html")
 
 
@@ -52,10 +54,15 @@ def login_page(request):
             login(request, user)
             return redirect("home")
     elif request.method == "GET":
+        if request.user.is_authenticated:
+            return redirect("home")
         return render(request, "Login_U.html", {"form": AuthenticationForm})
 
 
 @login_required
 def sign_out(request):
     logout(request)
-    return redirect("login")
+    # eliminar el cookie de pin
+    response = redirect("login")
+    response.delete_cookie("cookie_pin")
+    return response

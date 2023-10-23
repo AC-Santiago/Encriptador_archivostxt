@@ -1,25 +1,37 @@
 {% extends 'components/Encabezado.html' %} {% block content %}
-    <h1>Cifrar y Descifrar</h1>
+    <main class="container mt-5">
+        <section class="card card-body">
+            <h1 class="display-1 text-center">Cifrar y Descifrar</h1>
 
-    <form name="dec_cif_form" action="" method="post">
-        {% csrf_token %}
-        Seleccione la acción a realizar
-        <label>
-            <select>
-                <option value="1">Cifrar</option>
-                <option value="2">Descifrar</option>
-            </select>
-        </label>
-        <div class="Cifrar">
-            <label>Cifrar
-                <input type="hidden" name="Cifrar"><textarea name="text_cifrar" id="" cols="30"
-                                                             rows="10"></textarea></label>
-        </div>
-        <div class="Descifrar">
-            <label> Descifrar
-                <input type="hidden" name="Descifrar"><textarea name="text_descifrar" id="" cols="30"
-                                                                rows="10"></textarea></label>
-        </div>
-
-    </form>
+            <form name="dec_cif_form" action="" method="post">
+                {% csrf_token %}
+                Seleccione la acción a realizar
+                <label>
+                    <select class="form-select" aria-label="Default select example">
+                        <option selected value="1">Cifrar</option>
+                        <option value="2">Descifrar</option>
+                    </select>
+                </label>
+                <div class="row">
+                    <div class="col">
+                        <div class="mb-3">
+                            <label for="input_dec_cif" class="form-label">Cifrar</label>
+                            <textarea name="input_dec_cif" class="form-control" style="height: 100px; resize: none;"
+                                      id="input_dec_cif"
+                                      rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mb-3">
+                            <label for="output_dec_cif" class="form-label">Salida</label>
+                            <p class="form-control  card card-text" style="height: 100px; resize: none;"
+                               id="output_dec_cif"
+                            >{{ mensaje }}</p>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-dark">Enviar</button>
+            </form>
+        </section>
+    </main>
 {% endblock %}

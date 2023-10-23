@@ -15,43 +15,50 @@ llave = settings.KEY
 def passwords_page(request):
     passwords = Passwords_users.objects.filter(user=request.user)
     master_key: int = Users.objects.get(username=request.user).master_key
+    cookie_pin = request.COOKIES.get("cookie_pin")
     if request.method == "POST":
         if "form_delete_password" in request.POST:
             password_id = request.POST.get("password_id")
-            print(password_id)
             password = get_object_or_404(
                 Passwords_users, pk=password_id, user=request.user
             )
             password.delete()
             return redirect("Passwords_Page")
         form = MasterKeyForm(request.POST)
-        if form.is_valid():
-            if master_key:
-                input_master_key = request.POST.get("master_key")
-                print(input_master_key)
-                if pin_validator(request):
-                    if "form_password_detail" in request.POST:
-                        password_id = request.POST.get("password_id")
-                        print(password_id)
-                        return redirect("password_detail", password_id=password_id)
-                    elif "form_create_password" in request.POST:
-                        print("create")
-                        return redirect("Create_Password")
+        try:
+            if form.is_valid():
+                if master_key:
+                    if pin_validator(request):
+                        if "form_password_detail" in request.POST:
+                            password_id = request.POST.get("password_id")
+                            response = redirect(
+                                "password_detail",
+                                password_id=password_id,
+                            )
+                            response.set_cookie("cookie_pin", "True")
+                            return response
+                        elif "form_create_password" in request.POST:
+                            response = redirect("Create_Password")
+                            response.set_cookie("cookie_pin", "True")
+                            return response
+
+                    else:
+                        return redirect("Passwords_Page")
                 else:
-                    return redirect("Passwords_Page")
-            else:
-                master_key: int = request.POST.get("master_key")
-                print(master_key)
-                if master_key and len(str(master_key)) == 8:
-                    # le hacemos un hash a la master key
-                    hashed_master_key = bcrypt.hashpw(
-                        str(master_key).encode("utf-8"), bcrypt.gensalt()
-                    )
-                    # guardamos la master key en la base de datos
-                    Users.objects.filter(username=request.user).update(
-                        master_key=hashed_master_key.decode("utf-8")
-                    )
-                    return redirect("Passwords_Page")
+                    master_key: int = request.POST.get("master_key")
+                    if master_key and len(str(master_key)) == 8:
+                        # le hacemos un hash a la master key
+                        hashed_master_key = bcrypt.hashpw(
+                            str(master_key).encode("utf-8"), bcrypt.gensalt()
+                        )
+                        # guardamos la master key en la base de datos
+                        Users.objects.filter(username=request.user).update(
+                            master_key=hashed_master_key.decode("utf-8")
+                        )
+                        return redirect("Passwords_Page")
+
+        except ValueError:
+            return redirect("Passwords_Page")
 
     elif request.method == "GET":
         if not passwords:
@@ -72,16 +79,29 @@ def passwords_page(request):
             )
         else:
             master_key_exist = True
-            return render(
-                request,
-                "Passwords_page.html",
-                {
-                    "passwords": passwords,
-                    "passwords_exist": passwords_exist,
-                    "master_key_exist": master_key_exist,
-                    "form": MasterKeyForm,
-                },
-            )
+            if cookie_pin:
+                return render(
+                    request,
+                    "Passwords_page.html",
+                    {
+                        "passwords": passwords,
+                        "passwords_exist": passwords_exist,
+                        "master_key_exist": master_key_exist,
+                        "form": MasterKeyForm,
+                        "cookie_pin": cookie_pin,
+                    },
+                )
+            else:
+                return render(
+                    request,
+                    "Passwords_page.html",
+                    {
+                        "passwords": passwords,
+                        "passwords_exist": passwords_exist,
+                        "master_key_exist": master_key_exist,
+                        "form": MasterKeyForm,
+                    },
+                )
 
 
 @login_required
@@ -164,21 +184,22 @@ def password_detail(request, password_id):
     if request.method == "POST":
         password = get_object_or_404(Passwords_users, pk=password_id, user=request.user)
         form = PasswordsUsersForm(request.POST, instance=password)
-        try:
-            password.password = encrypt_password(request.POST.get("password"), llave)
-            password.password_email = encrypt_password(
-                request.POST.get("password_email"), llave
-            )
-            form.password = password.password
-            form.password_email = password.password_email
-            password.save()
-            return redirect("Passwords_Page")
-        except ValueError:
-            return render(
-                request,
-                "password_detail.html",
-                {"password": password, "form": form, "error": "Invalid form"},
-            )
+        if form.is_valid():
+            try:
+                password.password = encrypt_password(
+                    request.POST.get("password"), llave
+                )
+                password.password_email = encrypt_password(
+                    request.POST.get("password_email"), llave
+                )
+                password.save()
+                return redirect("Passwords_Page")
+            except ValueError:
+                return render(
+                    request,
+                    "password_detail.html",
+                    {"password": password, "form": form, "error": "Invalid form"},
+                )
     elif request.method == "GET":
         password = get_object_or_404(Passwords_users, pk=password_id, user=request.user)
         form = PasswordsUsersForm(instance=password)
