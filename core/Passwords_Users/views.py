@@ -22,20 +22,17 @@ def passwords_page(request):
             delete_password(request)
         form = MasterKeyForm(request.POST)
         try:
-            if form.is_valid():
-                if master_key:
-                    if pin_validator(request):
-                        if "form_password_detail" in request.POST:
-                            return redirect_to_password_detail(request)
-                        elif "form_create_password" in request.POST:
-                            return redirect_to_create_password(request)
-                    else:
-                        return redirect("Passwords_Page")
-                else:
-                    master_key = request.POST.get("master_key")
-                    if master_key and len(str(master_key)) == 8:
-                        hash_and_save_master_key(request, master_key)
-                        return redirect("Passwords_Page")
+            if not form.is_valid():
+                return redirect("Passwords_Page")
+            if not master_key:
+                return create_pin(request)
+            if not pin_validator(request):
+                return redirect("Passwords_Page")
+            if "form_password_detail" in request.POST:
+                return redirect_to_password_detail(request)
+            elif "form_create_password" in request.POST:
+                return redirect_to_create_password(request)
+
         except ValueError:
             return redirect("Passwords_Page")
 
@@ -80,6 +77,14 @@ def hash_and_save_master_key(request, master_key):
     Users.objects.filter(username=request.user).update(
         master_key=hashed_master_key.decode("utf-8")
     )
+
+
+def create_pin(request):
+    master_key = request.POST.get("master_key")
+    if master_key and len(str(master_key)) == 8:
+        hash_and_save_master_key(request, master_key)
+        response = redirect("Passwords_Page")
+        return response
 
 
 @login_required
