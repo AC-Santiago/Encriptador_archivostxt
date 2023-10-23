@@ -14,94 +14,72 @@ llave = settings.KEY
 @login_required
 def passwords_page(request):
     passwords = Passwords_users.objects.filter(user=request.user)
-    master_key: int = Users.objects.get(username=request.user).master_key
+    master_key = Users.objects.get(username=request.user).master_key
     cookie_pin = request.COOKIES.get("cookie_pin")
+
     if request.method == "POST":
         if "form_delete_password" in request.POST:
-            password_id = request.POST.get("password_id")
-            password = get_object_or_404(
-                Passwords_users, pk=password_id, user=request.user
-            )
-            password.delete()
-            return redirect("Passwords_Page")
+            delete_password(request)
         form = MasterKeyForm(request.POST)
         try:
             if form.is_valid():
                 if master_key:
                     if pin_validator(request):
                         if "form_password_detail" in request.POST:
-                            password_id = request.POST.get("password_id")
-                            response = redirect(
-                                "password_detail",
-                                password_id=password_id,
-                            )
-                            response.set_cookie("cookie_pin", "True")
-                            return response
+                            return redirect_to_password_detail(request)
                         elif "form_create_password" in request.POST:
-                            response = redirect("Create_Password")
-                            response.set_cookie("cookie_pin", "True")
-                            return response
-
+                            return redirect_to_create_password(request)
                     else:
                         return redirect("Passwords_Page")
                 else:
-                    master_key: int = request.POST.get("master_key")
+                    master_key = request.POST.get("master_key")
                     if master_key and len(str(master_key)) == 8:
-                        # le hacemos un hash a la master key
-                        hashed_master_key = bcrypt.hashpw(
-                            str(master_key).encode("utf-8"), bcrypt.gensalt()
-                        )
-                        # guardamos la master key en la base de datos
-                        Users.objects.filter(username=request.user).update(
-                            master_key=hashed_master_key.decode("utf-8")
-                        )
+                        hash_and_save_master_key(request, master_key)
                         return redirect("Passwords_Page")
-
         except ValueError:
             return redirect("Passwords_Page")
 
     elif request.method == "GET":
-        if not passwords:
-            passwords_exist = False
-        else:
-            passwords_exist = True
-        if not master_key:
-            master_key_exist = False
-            return render(
-                request,
-                "Passwords_page.html",
-                {
-                    "passwords": passwords,
-                    "passwords_exist": passwords_exist,
-                    "master_key_exist": master_key_exist,
-                    "form": MasterKeyForm,
-                },
-            )
-        else:
-            master_key_exist = True
-            if cookie_pin:
-                return render(
-                    request,
-                    "Passwords_page.html",
-                    {
-                        "passwords": passwords,
-                        "passwords_exist": passwords_exist,
-                        "master_key_exist": master_key_exist,
-                        "form": MasterKeyForm,
-                        "cookie_pin": cookie_pin,
-                    },
-                )
-            else:
-                return render(
-                    request,
-                    "Passwords_page.html",
-                    {
-                        "passwords": passwords,
-                        "passwords_exist": passwords_exist,
-                        "master_key_exist": master_key_exist,
-                        "form": MasterKeyForm,
-                    },
-                )
+        passwords_exist = False if not passwords else True
+        master_key_exist = True if master_key else False
+        return render(
+            request,
+            "Passwords_page.html",
+            {
+                "passwords": passwords,
+                "passwords_exist": passwords_exist,
+                "master_key_exist": master_key_exist,
+                "form": MasterKeyForm,
+                "cookie_pin": cookie_pin,
+            },
+        )
+
+
+def delete_password(request):
+    password_id = request.POST.get("password_id")
+    password = get_object_or_404(Passwords_users, pk=password_id, user=request.user)
+    password.delete()
+    return redirect("Passwords_Page")
+
+
+def redirect_to_password_detail(request):
+    password_id = request.POST.get("password_id")
+    response = redirect("password_detail", password_id=password_id)
+    response.set_cookie("cookie_pin", "True")
+    return response
+
+
+def redirect_to_create_password(request):
+    response = redirect("Create_Password")
+    response.set_cookie("cookie_pin", "True")
+    return response
+
+
+def hash_and_save_master_key(request, master_key):
+    hashed_master_key = bcrypt.hashpw(str(master_key).encode("utf-8"), bcrypt.gensalt())
+    Users.objects.filter(username=request.user).update(
+        master_key=hashed_master_key.decode("utf-8")
+    )
 
 
 @login_required
@@ -110,20 +88,18 @@ def pin_validator(request):
         master_key: int = Users.objects.get(username=request.user).master_key
         form = MasterKeyForm(request.POST)
         print(master_key)
-        if form.is_valid():
+        try:
+            if form.is_valid():
+                pass
             if master_key:
                 input_master_key = request.POST.get("master_key")
-                print(input_master_key)
-                if bcrypt.checkpw(
+                resultado = bcrypt.checkpw(
                     str(input_master_key).encode("utf-8"),
                     str(master_key).encode("utf-8"),
-                ):
-                    print("La master key es correcta")
-                    return True
-                else:
-                    print("La master key es incorrecta")
-                    return False
-
+                )
+                return resultado
+        except ValueError:
+            return redirect("Passwords_Page")
     elif request.method == "GET":
         return redirect("Passwords_Page")
 
