@@ -1,11 +1,12 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+import bcrypt
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+
+from .cryptography_module import decrypt_password, encrypt_password
 from .forms import PasswordsUsersForm, MasterKeyForm
 from .models import Passwords_users
 from ..Users_EncrytedPage.models import Users_EncrytedPage as Users
-from .cryptography_module import decrypt_password, encrypt_password
-import bcrypt
 
 llave = settings.KEY
 
@@ -39,6 +40,8 @@ def passwords_page(request):
             return redirect("Passwords_Page")
 
     elif request.method == "GET":
+        if "form_find_password" in request.GET:
+            return find_password(request)
         passwords_exist = False if not passwords else True
         master_key_exist = True if master_key else False
         return render(
@@ -112,6 +115,30 @@ def pin_validator(request):
                 return resultado
         except ValueError:
             return redirect("Passwords_Page")
+
+
+# """"Busca la contraseña"""
+def find_password(request):
+    search = request.GET.get("search")
+    passwords = Passwords_users.objects.filter(
+        password_name__icontains=search, user=request.user
+    )
+    master_key = Users.objects.get(username=request.user).master_key
+    cookie_pin = request.COOKIES.get("cookie_pin")
+    passwords_exist = False if not passwords else True
+    master_key_exist = True if master_key else False
+    response = render(
+        request,
+        "Passwords_page.html",
+        {
+            "passwords": passwords,
+            "passwords_exist": passwords_exist,
+            "master_key_exist": master_key_exist,
+            "form": MasterKeyForm,
+            "cookie_pin": cookie_pin,
+        },
+    )
+    return response
 
 
 # -------------------------PASSWORDS PAGE--------------------------#
