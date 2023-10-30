@@ -16,3 +16,5 @@ pycparser==2.21
 pymongo==4.3.3
 python-dotenv==1.0.0
 sqlparse==0.4.4
+
+numpy~=1.26.1
