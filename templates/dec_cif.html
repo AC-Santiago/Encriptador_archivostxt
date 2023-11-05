@@ -5,18 +5,18 @@
 
             <form name="dec_cif_form" action="" method="post">
                 {% csrf_token %}
-                Seleccione la acción a realizar
-                <label>
-                    <select class="form-select" aria-label="Default select example">
+
+                <label for="select_dec_cif">Seleccione la acción a realizar</label>
+                    <select class="form-select" aria-label="Default select example" name="select_dec_cif" id="select_dec_cif">
                         <option selected value="1">Cifrar</option>
                         <option value="2">Descifrar</option>
                     </select>
-                </label>
+
                 <div class="row">
                     <div class="col">
                         <div class="mb-3">
                             <label for="input_dec_cif" class="form-label">Cifrar</label>
-                            <textarea name="input_dec_cif" class="form-control" style="height: 100px; resize: none;"
+                            <textarea name="input_dec_cif" class="form-control"
                                       id="input_dec_cif"
                                       rows="3"></textarea>
                         </div>
@@ -24,7 +24,7 @@
                     <div class="col">
                         <div class="mb-3">
                             <label for="output_dec_cif" class="form-label">Salida</label>
-                            <p class="form-control  card card-text" style="height: 100px; resize: none;"
+                            <p class="form-control  card card-text"
                                id="output_dec_cif"
                             >{{ mensaje }}</p>
                         </div>

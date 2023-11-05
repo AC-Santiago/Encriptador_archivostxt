@@ -103,7 +103,6 @@ def pin_validator(request):
     if request.method == "POST":
         master_key: int = Users.objects.get(username=request.user).master_key
         form = MasterKeyForm(request.POST)
-        print(master_key)
         try:
             if form.is_valid():
                 pass
@@ -137,7 +136,6 @@ def find_password(request):
 def create_password(request):
     # obtiene la master key del usuario
     master_key = Users.objects.get(username=request.user).master_key
-    print(master_key)
     if request.method == "POST":
         form = PasswordsUsersForm(request.POST)
         if form.is_valid():
@@ -161,8 +159,6 @@ def create_password(request):
                 password=encrypted_password,
                 user=request.user,
             )
-            print(encrypted_password)
-            print(new_password)
             new_password.save()
             return redirect("Passwords_Page")
         else:

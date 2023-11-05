@@ -1,6 +1,4 @@
 import secrets
-import time
-import resource
 import numpy as np
 from .Manipulador_json import manage_json
 
@@ -140,19 +138,26 @@ class RSA:
 
         component_A = int(0)
         component_B = int(0)
-
-        for i in range(1, len(self.rules_Final)):
-            component_A = int(str(self.rules_Final[i - 1])[0:1])
-            component_B += int(str(self.rules_Final[i - 1])[1: component_A + 1])
-            element = str(self.rules_Final[i]) + str(
-                self.resultado_cifrado[component_B]
-            )
-            self.resultado_cifrado[component_B] = int(element)
+        if len(self.rules_Final) == 1:
+            component_A = int(str(self.rules_Final[0])[0:1])
+            component_B += int(str(self.rules_Final[0])[1: component_A + 1])
             self.resultado_cifrado_final = "".join(
-                str(e) for e in self.resultado_cifrado
-            )
+                    str(e) for e in self.resultado_cifrado
+                )
+            return self.resultado_cifrado_final
+        else:
+            for i in range(1, len(self.rules_Final)):
+                component_A = int(str(self.rules_Final[i - 1])[0:1])
+                component_B += int(str(self.rules_Final[i - 1])[1: component_A + 1])
+                element = str(self.rules_Final[i]) + str(
+                    self.resultado_cifrado[component_B]
+                )
+                self.resultado_cifrado[component_B] = int(element)
+                self.resultado_cifrado_final = "".join(
+                    str(e) for e in self.resultado_cifrado
+                )
 
-        return self.resultado_cifrado_final
+            return self.resultado_cifrado_final
 
     def descifrar(self, mensaje_cifrado, Llave_privada: list):
         self.lista_cifrado = self.organizar_mensajeC(mensaje_cifrado)
