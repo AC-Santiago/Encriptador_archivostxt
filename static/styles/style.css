@@ -1,14 +1,26 @@
-#input_dec_cif{
+#input_dec_cif {
     min-height: 200px;
     max-height: 200px;
     min-width: 400px;
     max-width: 500px;
     resize: none;
 }
-#output_dec_cif{
+
+#output_dec_cif {
     min-height: 200px;
     max-height: 200px;
     min-width: 400px;
     max-width: 500px;
     overflow: auto;
-} 
+}
+
+#container_CreateKeys {
+    min-height: 200px;
+    max-height: 200px;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+#form_delete_password {
+    max-height: 38px;
+}
