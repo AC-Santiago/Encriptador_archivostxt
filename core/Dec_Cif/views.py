@@ -1,16 +1,29 @@
 from django.shortcuts import render
+
 from .src.Funciones.Cifrado_decifrado import RSA
 
 
 # Create your views here.
+
+
+# -------------------------HOME PAGE-------------------------#
 def index(request):
     return render(request, "index.html", {"User": request.user})
+
+
+# -------------------------HOME PAGE-------------------------#
+
+# -------------------------ABOUT PAGE-------------------------#
 
 
 def about(request):
     return render(request, "about.html")
 
 
+# -------------------------ABOUT PAGE-------------------------#
+
+
+# -------------------------ENCRYPTION AND DECRYPTION-------------------------#
 def dec_cif(request):
     if request.method == "GET":
         return render(request, "dec_cif.html")
@@ -24,3 +37,6 @@ def dec_cif(request):
         elif request.POST["select_dec_cif"] == "2":
             mensaje_descifrado = rsa.descifrar(mensaje, llave_privada)
             return render(request, "dec_cif.html", {"mensaje": mensaje_descifrado})
+
+
+# -------------------------ENCRYPTION AND DECRYPTION-------------------------#

@@ -1,4 +1,5 @@
 from django import forms
+
 from .models import Passwords_users
 from ..Users_EncrytedPage.models import Users_EncrytedPage
 
@@ -61,7 +62,7 @@ class PasswordsUsersForm(forms.ModelForm):
             ),
         }
 
-    # Desactiva el aoutocompletado de los campos del formulario
+    # Desactiva el autocompletado de los campos del formulario
     def __init__(self, *args, **kwargs):
         super(PasswordsUsersForm, self).__init__(*args, **kwargs)
         self.fields["password"].widget.attrs.update({"autocomplete": "off"})

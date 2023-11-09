@@ -1,8 +1,8 @@
 import bcrypt
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
+from django.shortcuts import render, redirect, get_object_or_404
 
 from .cryptography_module import decrypt_password, encrypt_password
 from .forms import PasswordsUsersForm, MasterKeyForm
@@ -134,8 +134,6 @@ def find_password(request):
 # -------------------------CREATE PASSWORD-------------------------#
 @login_required
 def create_password(request):
-    # obtiene la master key del usuario
-    master_key = Users.objects.get(username=request.user).master_key
     if request.method == "POST":
         form = PasswordsUsersForm(request.POST)
         if form.is_valid():
@@ -210,6 +208,5 @@ def password_detail(request, password_id):
                 "password_password": decrypt_password(password.password, llave),
             },
         )
-
 
 # -------------------------PASSWORD DETAIL-------------------------#

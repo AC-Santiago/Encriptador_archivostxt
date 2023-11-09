@@ -9,6 +9,3 @@ class Keys_users(models.Model):
     key_name = models.CharField(max_length=100)
     key_public = models.CharField(max_length=200)
     key_private = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.key_name + " " + self.user.username
