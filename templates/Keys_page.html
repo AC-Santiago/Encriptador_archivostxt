@@ -33,22 +33,34 @@
                     </div>
                 </form>
                 <!-- <h2>Estas son sus llaves</h2> -->
-                <table class="table table-striped">
+                <table class="table table-striped text-center">
                     <thead>
                     <tr>
-                        <th scope="col">#</th>
                         <th scope="col">Nombre</th>
-                        <th scope="col">Eliminar</th>
-                        <th scope="col">Ver</th>
+                        <th scope="col">Opciones</th>
                     </tr>
                     </thead>
-                    <tbody class="table-group-divider">
+                    <tbody class="table-group-divider text-center">
                     {% for key in keys %}
                         <tr>
-                            <th scope="row">{{ key.id }}</th>
                             <td>{{ key.key_name }}</td>
-                            <td><a class="btn btn-dark" href="#">Eliminar</a></td>
-                            <td><a class="btn btn-outline-dark" href="#">Ver</a></td>
+                            <td>
+                                <div class="row">
+                                    <div class="col g-0"><a class="btn btn-dark" href="#">Ver</a></div>
+                                    <div class="col g-0">
+                                        <form action="" method="post" id="form_delete_password">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="key_id" value="{{ key.id }}">
+                                            <input type="hidden" value="delete_key"
+                                                   name="delete_key">
+                                            <button class="btn btn-outline-dark" type="submit">
+                                                eliminar
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -136,5 +148,4 @@
             {% endif %}
         </section>
     </main>
-
 {% endblock %}

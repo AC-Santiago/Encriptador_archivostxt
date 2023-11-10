@@ -33,6 +33,8 @@ def keys_page(request):
         )
     elif request.method == "POST":
         form = MasterKeyForm(request.POST)
+        if "delete_key" in request.POST:
+            return delete_key(request)
         try:
             if not form.is_valid():
                 return redirect("Keys_Page")
@@ -42,8 +44,6 @@ def keys_page(request):
                 return redirect("Keys_Page")
             if "form_create_keys" in request.POST:
                 return redirect_to_create_keys(request)
-            if "delete_key" in request.POST:
-                return delete_key(request)
         except ValueError:
             return redirect("Keys_Page")
 
