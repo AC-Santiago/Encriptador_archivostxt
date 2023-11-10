@@ -1,5 +1,6 @@
 import bcrypt
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 
 from core.Dec_Cif.src.Funciones.Cifrado_decifrado import RSA
@@ -18,6 +19,8 @@ def keys_page(request):
     cookie_pin = request.COOKIES.get("cookie_pin")
     master_key = Users.objects.get(username=request.user).master_key
     if request.method == "GET":
+        if "form_find_key" in request.GET:
+            keys_users = find_key(request)
         keys_users_exist = False if not keys_users else True
         master_key_exist = True if master_key else False
         return render(
@@ -97,6 +100,16 @@ def delete_key(request):
     key = get_object_or_404(Keys_users, pk=key_id, user=request.user)
     key.delete()
     return redirect("Keys_Page")
+
+
+# """Busca la llave"""
+def find_key(request):
+    consulta = request.GET.get("search")
+    query = Q(key_name__icontains=consulta)
+    keys_users = Keys_users.objects.filter(query)
+    if not keys_users:
+        keys_users = Keys_users.objects.filter(user=request.user)
+    return keys_users
 
 
 # -------------------------KEYS PAGE-------------------------#
