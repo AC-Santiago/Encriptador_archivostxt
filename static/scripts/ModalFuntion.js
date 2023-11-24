@@ -7,3 +7,6 @@ buttons.forEach(button => {
         myInput.value = dataId;
     });
 });
+
+
+

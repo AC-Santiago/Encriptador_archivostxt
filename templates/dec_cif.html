@@ -1,21 +1,30 @@
-{% extends 'components/Encabezado.html' %} {% block content %}
+{% extends 'components/Encabezado.html' %}
+{% load static %} {% block content %}
     <main class="container mt-5">
         <section class="card card-body">
             <h1 class="display-1 text-center">Cifrar y Descifrar</h1>
 
             <form name="dec_cif_form" action="" method="post">
                 {% csrf_token %}
+                <label for="Keys">Seleccione la llave</label>
+                <select name="Keys" id="Keys" class="form-select" aria-label="Default select example">
+                    {% for key in keys %}
+                        <option value="{{ key.key_name }}"> {{ key.key_name }}</option>
+                    {% endfor %}
+                </select>
+
 
                 <label for="select_dec_cif">Seleccione la acción a realizar</label>
-                    <select class="form-select" aria-label="Default select example" name="select_dec_cif" id="select_dec_cif">
-                        <option selected value="1">Cifrar</option>
-                        <option value="2">Descifrar</option>
-                    </select>
+                <select class="form-select" aria-label="Default select example" name="select_dec_cif"
+                        id="select_dec_cif">
+                    <option selected value="1">Cifrar</option>
+                    <option value="2">Descifrar</option>
+                </select>
 
                 <div class="row">
                     <div class="col">
                         <div class="mb-3">
-                            <label for="input_dec_cif" class="form-label">Cifrar</label>
+                            <label for="input_dec_cif" class="form-label">Entrada</label>
                             <textarea name="input_dec_cif" class="form-control"
                                       id="input_dec_cif"
                                       rows="3"></textarea>
@@ -34,4 +43,5 @@
             </form>
         </section>
     </main>
+    <script src="{% static 'SelectOptions.js' %}"></script>
 {% endblock %}
