@@ -1,4 +1,5 @@
-{% extends 'components/Encabezado.html' %} {% block content %}
+{% extends 'components/Encabezado.html' %}
+{% load static %} {% block content %}
     <main class="container mt-5">
         <section class="card card-body">
             {% if keys_exist %}
@@ -46,7 +47,19 @@
                             <td>{{ key.key_name }}</td>
                             <td>
                                 <div class="row">
-                                    <div class="col g-0"><a class="btn btn-dark" href="#">Ver</a></div>
+                                    <div class="col g-0">
+                                        {% if cookie %}
+                                            <a class="btn btn-dark"
+                                               href="{% url 'KeyDetail_Page' key.id %}">Ver</a>
+                                        {% else %}
+                                            <button class="btn btn-dark" type="button"
+                                                    data-bs-toggle="modal" data-bs-target="#staticBackdrop_detail_Key"
+                                                    data-bs-id="{{ key.id }}">
+                                                Ver
+                                            </button>
+                                        {% endif %}
+
+                                    </div>
                                     <div class="col g-0">
                                         <form action="" method="post" id="form_delete_password">
                                             {% csrf_token %}
@@ -145,7 +158,43 @@
                         </div>
                     </div>
                 </div>
+                <!-- Modal de editar llave-->
+                <div class="modal fade" id="staticBackdrop_detail_Key"
+                     data-bs-backdrop="static"
+                     data-bs-keyboard="false" tabindex="-1"
+                     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Pin de
+                                    seguridad</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <form action="" method="post" name="form_key_detail">
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                    <div class="input-group flex-nowrap">
+                                        <span class="input-group-text" id="addon-wrapping">Pin</span>
+                                        {{ form.master_key }}
+                                        <input type="hidden" name="form_key_detail">
+                                        <input type="hidden" name="key_id" id="key_id">
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-dark"
+                                            data-bs-dismiss="modal">
+                                        Volver
+                                    </button>
+                                    <button type="submit" class="btn btn-dark">Ok</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             {% endif %}
         </section>
     </main>
+    <script src="{% static 'ModalFuntionKey.js' %}"></script>
 {% endblock %}

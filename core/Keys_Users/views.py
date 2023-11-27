@@ -1,15 +1,17 @@
 import bcrypt
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 
 from core.Dec_Cif.src.Funciones.Cifrado_decifrado import RSA
 from core.Users_EncrytedPage.models import Users_EncrytedPage as Users
+from .cryptography_module_keys import decrypt_keys, encrypt_keys
 from .forms import MasterKeyForm, Keys_users_form
 from .models import Keys_users
 
-
 # Create your views here.
+llave = settings.KEY
 
 
 # -------------------------KEYS PAGE-------------------------#
@@ -47,6 +49,8 @@ def keys_page(request):
                 return redirect("Keys_Page")
             if "form_create_keys" in request.POST:
                 return redirect_to_create_keys(request)
+            if "form_key_detail" in request.POST:
+                return redirect_to_edit_keys(request)
         except ValueError:
             return redirect("Keys_Page")
 
@@ -73,6 +77,14 @@ def pin_validator(request):
 # """Redirecciona a la página de crear las llaves"""
 def redirect_to_create_keys(request):
     response = redirect("CreateKeys_Page")
+    response.set_cookie("cookie_pin", "True")
+    return response
+
+
+# """Redirecciona a la página de editar las llaves"""
+def redirect_to_edit_keys(request):
+    key_id = request.POST.get("key_id")
+    response = redirect("KeyDetail_Page", key_id=key_id)
     response.set_cookie("cookie_pin", "True")
     return response
 
@@ -127,8 +139,9 @@ def create_keys(request):
             keys = rsa.generar_clave()
             try:
                 new_key_name = request.POST.get("key_name")
-                new_key_public = keys[0]
-                new_key_private = keys[1]
+                new_key_public = encrypt_keys(str(keys[0]), llave)
+                new_key_private = encrypt_keys(str(keys[1]), llave)
+
                 new_key = Keys_users(
                     user=request.user,
                     key_name=new_key_name,
@@ -141,4 +154,26 @@ def create_keys(request):
                 return redirect("Keys_Page")
         return redirect("Keys_Page")
 
+
 # -------------------------CREATE KEYS PAGE-------------------------#
+
+# -----------------------KEY DETAILS PAGE-----------------------#
+@login_required
+def key_detail(request, key_id):
+    if request.method == "GET":
+        key = get_object_or_404(Keys_users, pk=key_id, user=request.user)
+        form = Keys_users_form(instance=key)
+        return render(request, "Key_detail.html",
+                      {"key": key, "key_public": decrypt_keys(key.key_public, llave),
+                       "key_private": decrypt_keys(key.key_private, llave), "form_keys": form})
+    elif request.method == "POST":
+        if "form_edit_key" in request.POST:
+            key = get_object_or_404(Keys_users, pk=key_id, user=request.user)
+            form = Keys_users_form(request.POST, instance=key)
+            try:
+                key.key_public = encrypt_keys(request.POST.get("key_public"), llave)
+                key.key_private = encrypt_keys(request.POST.get("key_private"), llave)
+                key.save()
+                return redirect("Keys_Page")
+            except ValueError:
+                return redirect("Keys_Page")

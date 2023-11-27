@@ -3,23 +3,35 @@
     <main class="container mt-5">
         <section class="card card-body">
             <h1 class="display-1 text-center">Cifrar y Descifrar</h1>
-
+            {% if Error %}
+                <div class="alert alert-dark" role="alert">
+                    {{ Error }}
+                </div>
+            {% endif %}
             <form name="dec_cif_form" action="" method="post">
                 {% csrf_token %}
-                <label for="Keys">Seleccione la llave</label>
-                <select name="Keys" id="Keys" class="form-select" aria-label="Default select example">
-                    {% for key in keys %}
-                        <option value="{{ key.key_name }}"> {{ key.key_name }}</option>
-                    {% endfor %}
-                </select>
-
-
-                <label for="select_dec_cif">Seleccione la acción a realizar</label>
-                <select class="form-select" aria-label="Default select example" name="select_dec_cif"
-                        id="select_dec_cif">
-                    <option selected value="1">Cifrar</option>
-                    <option value="2">Descifrar</option>
-                </select>
+                <div class="row text-center">
+                    <div class="col">
+                        <div class="mb-3">
+                            <label for="Keys">Seleccione la llave</label>
+                            <select name="Keys" id="Keys" class="form-select" aria-label="Default select example">
+                                {% for key in keys %}
+                                    <option value="{{ key.key_name }}"> {{ key.key_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="mb-3">
+                            <label for="select_dec_cif">Seleccione la acción a realizar</label>
+                            <select class="form-select" aria-label="Default select example" name="select_dec_cif"
+                                    id="select_dec_cif">
+                                <option selected value="1">Cifrar</option>
+                                <option value="2">Descifrar</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="row">
                     <div class="col">
