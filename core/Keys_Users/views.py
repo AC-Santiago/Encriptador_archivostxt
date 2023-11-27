@@ -174,5 +174,7 @@ def key_detail(request, key_id):
                 key.key_name = request.POST.get("key_name")
                 key.save()
                 return redirect("Keys_Page")
-            except ValueError:
-                return redirect("Keys_Page")
+            except ValueError as e:
+                return render(request, "Key_detail.html",
+                              {"key": key, "key_public": decrypt_keys(key.key_public, llave),
+                               "key_private": decrypt_keys(key.key_private, llave), "form_keys": form, "Error": e})
