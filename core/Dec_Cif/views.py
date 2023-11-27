@@ -1,9 +1,13 @@
 import json
 
+from django.conf import settings
 from django.shortcuts import render
 
+from core.Keys_Users.cryptography_module_keys import decrypt_keys
 from .src.Funciones.Cifrado_decifrado import RSA
 from ..Keys_Users.models import Keys_users
+
+llave_cry = settings.KEY
 
 
 # Create your views here.
@@ -35,7 +39,8 @@ def dec_cif(request):
         rsa = RSA()
         try:
             llave = Keys_users.objects.get(key_name=request.POST["Keys"])
-            llave_publica, llave_privada = json.loads(llave.key_public), json.loads(llave.key_private)
+            llave_publica, llave_privada = json.loads(decrypt_keys(llave.key_public, llave_cry)), json.loads(
+                decrypt_keys(llave.key_private, llave_cry))
             mensaje = request.POST["input_dec_cif"]
             if request.POST["select_dec_cif"] == "1":
                 mensaje_cifrado = rsa.cifrar(mensaje, llave_publica)

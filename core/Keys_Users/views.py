@@ -171,8 +171,7 @@ def key_detail(request, key_id):
             key = get_object_or_404(Keys_users, pk=key_id, user=request.user)
             form = Keys_users_form(request.POST, instance=key)
             try:
-                key.key_public = encrypt_keys(request.POST.get("key_public"), llave)
-                key.key_private = encrypt_keys(request.POST.get("key_private"), llave)
+                key.key_name = request.POST.get("key_name")
                 key.save()
                 return redirect("Keys_Page")
             except ValueError:
