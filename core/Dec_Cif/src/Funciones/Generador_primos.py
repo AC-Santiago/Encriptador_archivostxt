@@ -1,5 +1,8 @@
 from Manipulador_json import manage_json
 
+import json
+import os
+
 
 #! Verifica que los numeros sean primos
 def check_primo(n: int) -> bool:
@@ -12,12 +15,12 @@ def check_primo(n: int) -> bool:
 
 
 def Gene_pri():
-    path = "../Archivos.json"
+    path = r"core\Dec_Cif\src\Archivos.json"
     Archivo = manage_json(path)
-    primos = [elemento for elemento in range(2, 1000000) if check_primo(elemento)]
-    Archivo.create_json(
-        path, "Numeros_primos.json", '{"Numeros_primos": ' + str(primos) + "}"
-    )
+    primos = [elemento for elemento in range(100, 1000) if check_primo(elemento)]
+    new_file_path = os.path.join(path, "Numeros_primos.json")
+    with open(new_file_path, "w") as file:
+        json.dump({"Numeros_primos": primos}, file)
 
 
 if __name__ == "__main__":

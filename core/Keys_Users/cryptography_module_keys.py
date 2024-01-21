@@ -13,8 +13,3 @@ def decrypt_keys(encrypted_keys: str, key: str) -> str:
     f = Fernet(key)
     decrypted_keys = f.decrypt(encrypted_keys.encode("utf-8"))
     return decrypted_keys.decode("utf-8")
-
-# if __name__ == "__main__":
-#     llave = b"-vn-5Gh28Z3gcyfArydyKE-5uzXN8giqbesjhtVsJsQ="
-#     cifrado_llave = encrypt_keys("[307499, 58853]", llave)
-#     print(cifrado_llave)

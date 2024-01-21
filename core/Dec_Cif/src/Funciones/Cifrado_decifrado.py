@@ -1,6 +1,9 @@
+# import math
 import secrets
 import numpy as np
-from .Manipulador_json import manage_json
+
+# from .Manipulador_json import manage_json
+from Manipulador_json import manage_json
 
 
 # ? Tener en cuanta que el cifrado ARS necesita que n que es (p*q) sea mayor que el mensaje rsa cifrar
@@ -49,9 +52,10 @@ class RSA:
 
     # ! Genera los numeros primos y los componentes esenciales del cifrado como n y phi(n)
     def generar_bases(self):
-        # path = "../Archivos.json/Numeros_primos.json"
-        path = "core/Dec_Cif/src/Archivos.json/Numeros_primos.json"
+        path = "../Archivos.json/Numeros_primos.json"
+        # path = "core/Dec_Cif/src/Archivos.json/Numeros_primos.json"
         # path = "src/Archivos.json/Numeros_primos.json"
+
         Numero_primo = manage_json(path)
         while self.p == self.q:
             self.p = secrets.choice(
@@ -67,21 +71,32 @@ class RSA:
             return self.p, self.q, self.n, self.phi
 
     # ! funcion que muestra los maximos como un divisor de dos numeros
-    def maximo_comun_divisor(self, a: int, b: int):
+    def maximo_comun_divisor(self, a: int, b: int) -> int:
         while b != 0:
             a, b = b, a % b  # * funciona con el algoritmo de euclides
         return a
 
+    def gcd(self, a: int, b: int) -> int:
+        if b == 0:
+            return a
+        else:
+            return self.gcd(b, a % b)
+
     # ! funcion que hace una lista de los numeros que den como maximos como un divisor de 1
-    def lista_maximo_comun_divisor(self, a: int):
+    def lista_maximo_comun_divisor(self, phi: int) -> list:
+        # limite = int(math.sqrt(phi))
+        # lista = [i for i in range(2, phi) if self.maximo_comun_divisor(phi, i) == 1]
         lista = list()
-        for i in range(2, a):
-            if self.maximo_comun_divisor(a, i) == 1:
+        for i in range(phi, 2, -1):
+            if self.gcd(phi, i) == 1:
                 lista.append(i)
+                if len(lista) == 100:
+                    break
+        # lista = [i for i in range(2, phi) if self.gcd(phi, i) == 1]
         return lista
 
     # ! Genera los dos componentes esenciales para las clave publica y privada
-    def generar_clave(self):
+    def generar_clave(self) -> tuple:
         self.generar_bases()
         self.e = int(secrets.choice(self.lista_maximo_comun_divisor(self.phi)))
         for i in range(1, self.phi):
@@ -104,7 +119,7 @@ class RSA:
         rule = int()
         for letra in self.mensaje_cifrado:
             dato = int(ord(letra))
-            operacion = (dato ** self.e) % self.n
+            operacion = (dato**self.e) % self.n
             self.resultado_cifrado.append(operacion)
             rule = len(str(operacion))
             self.rules = np.append(self.rules, rule)
@@ -140,15 +155,15 @@ class RSA:
         component_B = int(0)
         if len(self.rules_Final) == 1:
             component_A = int(str(self.rules_Final[0])[0:1])
-            component_B += int(str(self.rules_Final[0])[1: component_A + 1])
+            component_B += int(str(self.rules_Final[0])[1 : component_A + 1])
             self.resultado_cifrado_final = "".join(
-                    str(e) for e in self.resultado_cifrado
-                )
+                str(e) for e in self.resultado_cifrado
+            )
             return self.resultado_cifrado_final
         else:
             for i in range(1, len(self.rules_Final)):
                 component_A = int(str(self.rules_Final[i - 1])[0:1])
-                component_B += int(str(self.rules_Final[i - 1])[1: component_A + 1])
+                component_B += int(str(self.rules_Final[i - 1])[1 : component_A + 1])
                 element = str(self.rules_Final[i]) + str(
                     self.resultado_cifrado[component_B]
                 )
@@ -166,7 +181,7 @@ class RSA:
         self.d = Llave_privada[1]
         for i in range(rango):
             letra_cifrado = int(self.lista_cifrado[i])
-            operacion = (letra_cifrado ** self.d) % self.n
+            operacion = self.exponenciacion_rapida(letra_cifrado, self.d, self.n)
             self.resultado_descifrado.append(chr(operacion))
         mesanje_descifrado = "".join(self.resultado_descifrado)
         return mesanje_descifrado
@@ -176,27 +191,27 @@ class RSA:
         cifrado = []
 
         component_A = int(str(resultado_cifrado[0:1]))
-        component_B = int(str(resultado_cifrado[1: component_A + 1]))
-        component_C = int(str(resultado_cifrado[component_A + 1: component_A + 2]))
+        component_B = int(str(resultado_cifrado[1 : component_A + 1]))
+        component_C = int(str(resultado_cifrado[component_A + 1 : component_A + 2]))
         component_D = int(
-            str(resultado_cifrado[component_A + 2: component_A + 2 + component_C])
+            str(resultado_cifrado[component_A + 2 : component_A + 2 + component_C])
         )
 
         cifrado.append(
             int(
                 resultado_cifrado[
-                len(
-                    str(component_A)
-                    + str(component_B)
-                    + str(component_C)
-                    + str(component_D)
-                ): len(
-                    str(component_A)
-                    + str(component_B)
-                    + str(component_C)
-                    + str(component_D)
-                )
-                   + component_D
+                    len(
+                        str(component_A)
+                        + str(component_B)
+                        + str(component_C)
+                        + str(component_D)
+                    ) : len(
+                        str(component_A)
+                        + str(component_B)
+                        + str(component_C)
+                        + str(component_D)
+                    )
+                    + component_D
                 ]
             )
         )
@@ -221,23 +236,23 @@ class RSA:
                     ciclo_repeat = component_B
                     first_time = False
                 if repeat == component_B and ciclo_repeat >= 0:
-                    component_A = int(resultado_cifrado[indice: indice + 1])
+                    component_A = int(resultado_cifrado[indice : indice + 1])
                     component_B = int(
-                        resultado_cifrado[indice + 1: indice + 1 + component_A]
+                        resultado_cifrado[indice + 1 : indice + 1 + component_A]
                     )
                     component_C = int(
                         resultado_cifrado[
-                        indice + 1 + component_A: indice + 2 + component_A
+                            indice + 1 + component_A : indice + 2 + component_A
                         ]
                     )
                     component_D = int(
                         resultado_cifrado[
-                        indice
-                        + 2
-                        + component_A: indice
-                                       + 2
-                                       + component_A
-                                       + component_C
+                            indice
+                            + 2
+                            + component_A : indice
+                            + 2
+                            + component_A
+                            + component_C
                         ]
                     )
                     rule = len(
@@ -249,7 +264,7 @@ class RSA:
                     cifrado.append(
                         int(
                             resultado_cifrado[
-                            indice + rule: indice + rule + component_D
+                                indice + rule : indice + rule + component_D
                             ]
                         )
                     )
@@ -259,7 +274,7 @@ class RSA:
 
                 else:
                     cifrado.append(
-                        int(resultado_cifrado[indice: indice + component_D])
+                        int(resultado_cifrado[indice : indice + component_D])
                     )
                     indice += component_D
                     repeat += 1
@@ -268,3 +283,23 @@ class RSA:
             except:
                 break
         return cifrado
+
+    def exponenciacion_rapida(self, base, exponente, modulo):
+        resultado = 1
+        while exponente > 0:
+            if exponente % 2 == 1:
+                resultado = (resultado * base) % modulo
+            exponente = exponente // 2
+            base = (base * base) % modulo
+        return resultado
+
+
+if __name__ == "__main__":
+    rsa = RSA()
+    # print(rsa.lista_maximo_comun_divisor(10))
+    Keys = rsa.generar_clave()
+    print(Keys)
+    mensaje_cifrado = rsa.cifrar("hola", Keys[0])
+    print(mensaje_cifrado)
+    mensaje_descifrado = rsa.descifrar(mensaje_cifrado, Keys[1])
+    print(mensaje_cifrado)
