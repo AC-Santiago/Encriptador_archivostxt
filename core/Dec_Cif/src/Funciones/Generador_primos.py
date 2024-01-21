@@ -16,8 +16,7 @@ def check_primo(n: int) -> bool:
 
 def Gene_pri():
     path = r"core\Dec_Cif\src\Archivos.json"
-    Archivo = manage_json(path)
-    primos = [elemento for elemento in range(100, 1000) if check_primo(elemento)]
+    primos = [elemento for elemento in range(1000, 5000) if check_primo(elemento)]
     new_file_path = os.path.join(path, "Numeros_primos.json")
     with open(new_file_path, "w") as file:
         json.dump({"Numeros_primos": primos}, file)

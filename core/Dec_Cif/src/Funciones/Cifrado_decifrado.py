@@ -52,7 +52,7 @@ class RSA:
 
     # ! Genera los numeros primos y los componentes esenciales del cifrado como n y phi(n)
     def generar_bases(self):
-        path = "../Archivos.json/Numeros_primos.json"
+        path = r"core\Dec_Cif\src\Archivos.json\Numeros_primos.json"
         # path = "core/Dec_Cif/src/Archivos.json/Numeros_primos.json"
         # path = "src/Archivos.json/Numeros_primos.json"
 
@@ -119,7 +119,7 @@ class RSA:
         rule = int()
         for letra in self.mensaje_cifrado:
             dato = int(ord(letra))
-            operacion = (dato**self.e) % self.n
+            operacion = self.exponenciacion_rapida(dato, self.e, self.n)
             self.resultado_cifrado.append(operacion)
             rule = len(str(operacion))
             self.rules = np.append(self.rules, rule)
@@ -295,6 +295,9 @@ class RSA:
 
 
 if __name__ == "__main__":
+    # path = r"core\Dec_Cif\src\Archivos.json\Numeros_primos.json"
+    # Numero_primo = manage_json(path)
+    # print(Numero_primo.get_element("Numeros_primos")[0])
     rsa = RSA()
     # print(rsa.lista_maximo_comun_divisor(10))
     Keys = rsa.generar_clave()
@@ -302,4 +305,4 @@ if __name__ == "__main__":
     mensaje_cifrado = rsa.cifrar("hola", Keys[0])
     print(mensaje_cifrado)
     mensaje_descifrado = rsa.descifrar(mensaje_cifrado, Keys[1])
-    print(mensaje_cifrado)
+    print(mensaje_descifrado)
