@@ -1,3 +1,48 @@
+/*Adaptar la interfaz a movil*/
+@media (max-width: 767px) {
+    /*Adaptar el navbar con id id="Encabezado"*/
+    #Encabezado {
+        min-height: 50px;
+        max-height: 50px;
+    }
+
+    #container_CreateKeys {
+        min-height: 200px;
+        max-height: 200px;
+        min-width: 300px;
+        max-width: 400px;
+    }
+
+    #container_KeyDetail {
+        min-height: 200px;
+        max-height: 200px;
+        min-width: 300px;
+        max-width: 400px;
+    }
+
+    #form_delete_password {
+        max-height: 38px;
+    }
+}
+
+
+/*Contenedor del input del buscador*/
+.container#container_search {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.item {
+    padding: 10px;
+    flex: 0 1 15%;
+}
+
+.item:nth-child(1) {
+    flex: 1 1 10%;
+}
+
 #input_dec_cif {
     min-height: 200px;
     /*max-height: 200px;*/
