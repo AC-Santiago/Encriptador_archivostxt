@@ -1,9 +1,7 @@
-# import math
 import secrets
 import numpy as np
 
-# from .Manipulador_json import manage_json
-from Manipulador_json import manage_json
+from .Manipulador_json import manage_json
 
 
 # ? Tener en cuanta que el cifrado ARS necesita que n que es (p*q) sea mayor que el mensaje rsa cifrar
@@ -27,12 +25,6 @@ class RSA:
         self.resultado_cifrado_final = str()
         self.resultado_descifrado = list()
 
-        ## Abre el archivo json
-        self.path = "../Archivos.json/Abecedario.json"
-        # self.path = "core/Dec_Cif/src/Archivos.json/Abecedario.json"
-        # self.path = "src/Archivos.json/Abecedario.json"
-
-        self.abecedario = manage_json(self.path)
         self.rules = np.array([], dtype=int)
         self.rules_Final = list()
 
@@ -53,8 +45,6 @@ class RSA:
     # ! Genera los numeros primos y los componentes esenciales del cifrado como n y phi(n)
     def generar_bases(self):
         path = r"core\Dec_Cif\src\Archivos.json\Numeros_primos.json"
-        # path = "core/Dec_Cif/src/Archivos.json/Numeros_primos.json"
-        # path = "src/Archivos.json/Numeros_primos.json"
 
         Numero_primo = manage_json(path)
         while self.p == self.q:
@@ -84,15 +74,12 @@ class RSA:
 
     # ! funcion que hace una lista de los numeros que den como maximos como un divisor de 1
     def lista_maximo_comun_divisor(self, phi: int) -> list:
-        # limite = int(math.sqrt(phi))
-        # lista = [i for i in range(2, phi) if self.maximo_comun_divisor(phi, i) == 1]
         lista = list()
         for i in range(phi, 2, -1):
             if self.gcd(phi, i) == 1:
                 lista.append(i)
                 if len(lista) == 100:
                     break
-        # lista = [i for i in range(2, phi) if self.gcd(phi, i) == 1]
         return lista
 
     # ! Genera los dos componentes esenciales para las clave publica y privada
@@ -292,17 +279,3 @@ class RSA:
             exponente = exponente // 2
             base = (base * base) % modulo
         return resultado
-
-
-if __name__ == "__main__":
-    # path = r"core\Dec_Cif\src\Archivos.json\Numeros_primos.json"
-    # Numero_primo = manage_json(path)
-    # print(Numero_primo.get_element("Numeros_primos")[0])
-    rsa = RSA()
-    # print(rsa.lista_maximo_comun_divisor(10))
-    Keys = rsa.generar_clave()
-    print(Keys)
-    mensaje_cifrado = rsa.cifrar("hola", Keys[0])
-    print(mensaje_cifrado)
-    mensaje_descifrado = rsa.descifrar(mensaje_cifrado, Keys[1])
-    print(mensaje_descifrado)
