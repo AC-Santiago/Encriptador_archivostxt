@@ -4,9 +4,9 @@ import numpy as np
 from .Manipulador_json import manage_json
 
 
-# ? Tener en cuanta que el cifrado ARS necesita que n que es (p*q) sea mayor que el mensaje rsa cifrar
-# ? Ejemplo si el cuadro de referencia contempla 65 caracteres n no puede ser menor
-# ? 0≤m<n donde m es la letra rsa cifrar y n es el cuadro de referencia
+# ? Tener en cuanta que el cifrado RSA necesita que n que es (p*q) sea mayor que el mensaje rsa cifrar.
+# ? Ejemplo: si el cuadro de referencia contempla 65 caracteres n no puede ser menor.
+# ? 0≤m<n donde m es la letra rsa cifrar y n que es (p*q) es mayor al cuadro de referencia
 class RSA:
     def __init__(self):
         self.p = int()  ## numero primo
@@ -18,8 +18,6 @@ class RSA:
 
         self.longitud_mensaje = int()
         self.mensaje_cifrado = str()
-        self.letter = str()
-        self.select = int()
 
         self.resultado_cifrado = list()
         self.resultado_cifrado_final = str()
@@ -28,8 +26,7 @@ class RSA:
         self.rules = np.array([], dtype=int)
         self.rules_Final = list()
 
-    # ! Genera los numeros primos y los componentes esenciales del cifrado como n y phi(n)
-    def generar_bases(self):
+    def _generar_bases(self) -> tuple:
         path = r"core\Dec_Cif\src\Archivos.json\Numeros_primos.json"
 
         Numero_primo = manage_json(path)
@@ -46,53 +43,34 @@ class RSA:
             self.phi = (self.p - 1) * (self.q - 1)
             return self.p, self.q, self.n, self.phi
 
-    def gcd(self, a: int, b: int) -> int:
+    def _gcd(self, a: int, b: int) -> int:
         if b == 0:
             return a
         else:
-            return self.gcd(b, a % b)
+            return self._gcd(b, a % b)
 
-    # ! funcion que hace una lista de los numeros que den como maximos como un divisor de 1
-    def lista_maximo_comun_divisor(self, phi: int) -> list:
+    def _lista_maximo_comun_divisor(self, phi: int) -> list:
         lista = list()
         for i in range(phi, 2, -1):
-            if self.gcd(phi, i) == 1:
+            if self._gcd(phi, i) == 1:
                 lista.append(i)
                 if len(lista) == 100:
                     break
         return lista
 
-    # ! Genera los dos componentes esenciales para las clave publica y privada
     def generar_clave(self) -> tuple:
-        self.generar_bases()
-        self.e = int(secrets.choice(self.lista_maximo_comun_divisor(self.phi)))
+        self._generar_bases()
+        self.e = int(secrets.choice(self._lista_maximo_comun_divisor(self.phi)))
         for i in range(1, self.phi):
             operacion_d1 = 1 + (i * self.phi)
             operacion_d2 = operacion_d1 / self.e
             if operacion_d2.is_integer():
                 self.d = int(operacion_d2)
-                # * evita que d sea igual rsa e
                 if self.d != self.e:
                     break
         return [self.n, self.e], [self.n, self.d]
 
-    def cifrar(self, mensaje: str, Llave_publica: list):
-        self.longitud_mensaje = len(mensaje)
-        self.mensaje_cifrado = str(mensaje)
-        self.n = Llave_publica[0]
-        self.e = Llave_publica[1]
-
-        operacion = int()
-        rule = int()
-        for letra in self.mensaje_cifrado:
-            dato = int(ord(letra))
-            operacion = self.exponenciacion_rapida(dato, self.e, self.n)
-            self.resultado_cifrado.append(operacion)
-            rule = len(str(operacion))
-            self.rules = np.append(self.rules, rule)
-        return self.create_rule()
-
-    def create_rule(self):
+    def _create_rule(self) -> str:
         contador = 1
         for i in range(len(self.rules) - 1):
             if self.rules[i] == self.rules[i + 1]:
@@ -141,19 +119,32 @@ class RSA:
 
             return self.resultado_cifrado_final
 
-    def descifrar(self, mensaje_cifrado, Llave_privada: list):
-        self.lista_cifrado = self.organizar_mensajeC(mensaje_cifrado)
-        rango = len(self.lista_cifrado)
-        self.n = Llave_privada[0]
-        self.d = Llave_privada[1]
-        for i in range(rango):
-            letra_cifrado = int(self.lista_cifrado[i])
-            operacion = self.exponenciacion_rapida(letra_cifrado, self.d, self.n)
-            self.resultado_descifrado.append(chr(operacion))
-        mesanje_descifrado = "".join(self.resultado_descifrado)
-        return mesanje_descifrado
+    def _exponenciacion_rapida(self, base, exponente, modulo) -> int:
+        resultado = 1
+        while exponente > 0:
+            if exponente % 2 == 1:
+                resultado = (resultado * base) % modulo
+            exponente = exponente // 2
+            base = (base * base) % modulo
+        return resultado
 
-    def organizar_mensajeC(self, mensaje_cifrado: str):
+    def cifrar(self, mensaje: str, Llave_publica: list) -> str:
+        self.longitud_mensaje = len(mensaje)
+        self.mensaje_cifrado = str(mensaje)
+        self.n = Llave_publica[0]
+        self.e = Llave_publica[1]
+
+        operacion = int()
+        rule = int()
+        for letra in self.mensaje_cifrado:
+            dato = int(ord(letra))
+            operacion = self._exponenciacion_rapida(dato, self.e, self.n)
+            self.resultado_cifrado.append(operacion)
+            rule = len(str(operacion))
+            self.rules = np.append(self.rules, rule)
+        return self._create_rule()
+
+    def _organizar_mensajeC(self, mensaje_cifrado: str) -> list:
         resultado_cifrado = str(mensaje_cifrado)
         cifrado = []
 
@@ -251,11 +242,14 @@ class RSA:
                 break
         return cifrado
 
-    def exponenciacion_rapida(self, base, exponente, modulo):
-        resultado = 1
-        while exponente > 0:
-            if exponente % 2 == 1:
-                resultado = (resultado * base) % modulo
-            exponente = exponente // 2
-            base = (base * base) % modulo
-        return resultado
+    def descifrar(self, mensaje_cifrado: str, Llave_privada: list) -> str:
+        self.lista_cifrado = self._organizar_mensajeC(mensaje_cifrado)
+        rango = len(self.lista_cifrado)
+        self.n = Llave_privada[0]
+        self.d = Llave_privada[1]
+        for i in range(rango):
+            letra_cifrado = int(self.lista_cifrado[i])
+            operacion = self._exponenciacion_rapida(letra_cifrado, self.d, self.n)
+            self.resultado_descifrado.append(chr(operacion))
+        mesanje_descifrado = "".join(self.resultado_descifrado)
+        return mesanje_descifrado
