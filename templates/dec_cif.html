@@ -1,66 +1,65 @@
 {% extends 'components/Encabezado.html' %}
 {% load static %} {% block content %}
-    <main class="container mt-5">
-        <section class="card card-body">
-            <h1 class="display-1 text-center">Cifrar y Descifrar</h1>
-            {% if Error %}
-                <div class="alert alert-danger d-flex align-items-center" role="alert">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"
-                         fill="currentColor"
-                         viewBox="0 0 16 16" role="img" aria-label="Danger:" width="20" height="20">
-                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path>
-                    </svg>
-                    <div>
-                        {{ Error }}
+<main class="container mt-5">
+    <section class="card card-body">
+        <h1 class="display-1 text-center">Cifrar y Descifrar</h1>
+        {% if Error %}
+        <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"
+                fill="currentColor" viewBox="0 0 16 16" role="img" aria-label="Danger:" width="20" height="20">
+                <path
+                    d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z">
+                </path>
+            </svg>
+            <div>
+                {{ Error }}
+            </div>
+        </div>
+        {% endif %}
+        <form name="dec_cif_form" action="" method="post">
+            {% csrf_token %}
+            <div class="row text-center">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="Keys">Seleccione la llave</label>
+                        <select name="Keys" id="Keys" class="form-select" aria-label="Default select example">
+                            {% for key in keys %}
+                            <option value="{{ key.key_name }}"> {{ key.key_name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
-            {% endif %}
-            <form name="dec_cif_form" action="" method="post">
-                {% csrf_token %}
-                <div class="row text-center">
-                    <div class="col">
-                        <div class="mb-3">
-                            <label for="Keys">Seleccione la llave</label>
-                            <select name="Keys" id="Keys" class="form-select" aria-label="Default select example">
-                                {% for key in keys %}
-                                    <option value="{{ key.key_name }}"> {{ key.key_name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="mb-3">
-                            <label for="select_dec_cif">Seleccione la acción a realizar</label>
-                            <select class="form-select" aria-label="Default select example" name="select_dec_cif"
-                                    id="select_dec_cif">
-                                <option selected value="1">Cifrar</option>
-                                <option value="2">Descifrar</option>
-                            </select>
-                        </div>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="select_dec_cif">Seleccione la acción a realizar</label>
+                        <select class="form-select" aria-label="Default select example" name="select_dec_cif"
+                            id="select_dec_cif">
+                            <option selected value="1">Cifrar</option>
+                            <option value="2">Descifrar</option>
+                        </select>
                     </div>
                 </div>
+            </div>
 
-                <div class="row">
-                    <div class="col">
-                        <div class="mb-3">
-                            <label for="input_dec_cif" class="form-label">Entrada</label>
-                            <textarea name="input_dec_cif" class="form-control"
-                                      id="input_dec_cif"
-                                      rows="3"></textarea>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="mb-3">
-                            <label for="output_dec_cif" class="form-label">Salida</label>
-                            <p class="form-control  card card-text"
-                               id="output_dec_cif"
-                            >{{ mensaje }}</p>
-                        </div>
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="input_dec_cif" class="form-label">Entrada</label>
+                        <textarea name="input_dec_cif" class="form-control" id="input_dec_cif"></textarea>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-dark">Enviar</button>
-            </form>
-        </section>
-    </main>
-    <script src="{% static 'SelectOptions.js' %}"></script>
+                <div class="col">
+                    <div class="mb-3">
+                        <label for="output_dec_cif" class="form-label">Salida</label>
+                        <p class="form-control card card-text" id="output_dec_cif"
+                            style="overflow-y: auto; width: 100%; word-wrap: break-word;">
+                            {{ mensaje }}</p>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-dark">Enviar</button>
+        </form>
+    </section>
+</main>
+<script src="{% static 'SelectOptions.js' %}"></script>
 {% endblock %}
