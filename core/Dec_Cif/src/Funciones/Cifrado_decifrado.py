@@ -43,16 +43,16 @@ class RSA:
             self.phi = (self.p - 1) * (self.q - 1)
             return self.p, self.q, self.n, self.phi
 
-    def _gcd(self, a: int, b: int) -> int:
+    def _mcd(self, a: int, b: int) -> int:
         if b == 0:
             return a
         else:
-            return self._gcd(b, a % b)
+            return self._mcd(b, a % b)
 
     def _lista_maximo_comun_divisor(self, phi: int) -> list:
         lista = list()
         for i in range(phi, 2, -1):
-            if self._gcd(phi, i) == 1:
+            if self._mcd(phi, i) == 1:
                 lista.append(i)
                 if len(lista) == 100:
                     break
@@ -119,7 +119,7 @@ class RSA:
 
             return self.resultado_cifrado_final
 
-    def _exponenciacion_rapida(self, base, exponente, modulo) -> int:
+    def _exponenciacion_rapida(self, base: int, exponente: int, modulo: int) -> int:
         resultado = 1
         while exponente > 0:
             if exponente % 2 == 1:
