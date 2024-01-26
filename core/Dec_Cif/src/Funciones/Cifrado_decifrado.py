@@ -28,20 +28,6 @@ class RSA:
         self.rules = np.array([], dtype=int)
         self.rules_Final = list()
 
-    # ! Verifica que los numeros sean primos
-    def primo_check(self, a: int):
-        contador = int(0)
-        for i in range(1, a + 1):
-            residuo = int(a % i)
-            if residuo == 0:
-                contador += 1
-            elif contador > 2:
-                break
-        if contador == 2:
-            return True
-        else:
-            return False
-
     # ! Genera los numeros primos y los componentes esenciales del cifrado como n y phi(n)
     def generar_bases(self):
         path = r"core\Dec_Cif\src\Archivos.json\Numeros_primos.json"
@@ -59,12 +45,6 @@ class RSA:
             self.n = self.p * self.q
             self.phi = (self.p - 1) * (self.q - 1)
             return self.p, self.q, self.n, self.phi
-
-    # ! funcion que muestra los maximos como un divisor de dos numeros
-    def maximo_comun_divisor(self, a: int, b: int) -> int:
-        while b != 0:
-            a, b = b, a % b  # * funciona con el algoritmo de euclides
-        return a
 
     def gcd(self, a: int, b: int) -> int:
         if b == 0:
