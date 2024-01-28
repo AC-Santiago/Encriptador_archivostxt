@@ -9,10 +9,27 @@ from .Manipulador_json import manage_json
 # ? 0≤m<n donde m es la letra rsa cifrar y n que es (p*q) es mayor al cuadro de referencia
 class RSA:
     def __init__(self):
-        self.p = int()  ## numero primo
-        self.q = int()  ## numero primo
-        self.n = int()  ## n = p*q
-        self.phi = int()  ## phi = (p-1)*(q-1)
+        """
+        Inicializa la clase CifradoDecifrado.
+
+        Parámetros:
+        - p (int): Número primo.
+        - q (int): Número primo.
+        - n (int): n = p*q.
+        - phi (int): phi = (p-1)*(q-1).
+        - e (int): Clave pública.
+        - d (int): Clave privada.
+        - longitud_mensaje (int): Longitud del mensaje.
+        - mensaje_cifrado (str): Mensaje cifrado.
+        - resultado_cifrado (list): Lista de resultados intermedios de cifrado.
+        - resultado_cifrado_final (str): Resultado final cifrado.
+        - resultado_descifrado (list): Lista de resultados intermedios de descifrado.
+        - rules (np.array): Array de reglas.
+        """
+        self.p = int()
+        self.q = int()
+        self.n = int()
+        self.phi = int()
         self.e = int()
         self.d = int()
 
@@ -27,6 +44,12 @@ class RSA:
         self.rules_Final = list()
 
     def _generar_bases(self) -> tuple:
+        """
+        Genera los valores de las bases necesarios para el cifrado y descifrado.
+
+        Returns:
+            tuple: Una tupla que contiene los valores de p, q, n y phi.
+        """
         path = r"core\Dec_Cif\src\Archivos.json\Numeros_primos.json"
 
         Numero_primo = manage_json(path)
@@ -44,12 +67,39 @@ class RSA:
             return self.p, self.q, self.n, self.phi
 
     def _mcd(self, a: int, b: int) -> int:
+        """
+        Calcula el máximo común divisor (MCD) de dos números enteros utilizando el algoritmo de Euclides.
+
+        Args:
+            a (int): El primer número entero.
+            b (int): El segundo número entero.
+
+        Returns:
+            int: El máximo común divisor de los dos números enteros.
+        """
         if b == 0:
             return a
         else:
             return self._mcd(b, a % b)
 
     def _lista_maximo_comun_divisor(self, phi: int) -> list:
+        """
+        Genera una lista de los números menores que phi que son coprimos con phi.
+
+        Args:
+            phi (int): El número phi.
+
+        Returns:
+            list: Una lista de números coprimos con phi.
+
+        Examples:
+            >>> _lista_maximo_comun_divisor(5)
+            [4, 3, 2]
+            >>> _lista_maximo_comun_divisor(10)
+            [9, 8, 7, 6, 4, 3, 2]
+            >>> _lista_maximo_comun_divisor(15)
+            [14, 13, 11, 7, 6, 4, 3, 2]
+        """
         lista = list()
         for i in range(phi, 2, -1):
             if self._mcd(phi, i) == 1:
@@ -59,6 +109,16 @@ class RSA:
         return lista
 
     def generar_clave(self) -> tuple:
+        """
+        Genera una clave pública y una clave privada para el cifrado y descifrado de datos.
+
+        Returns:
+            tuple: Una tupla que contiene la clave pública y la clave privada.
+
+        Examples: El retorno del ejemplo solo es para mostrar el formato de la tupla.
+            >>> generar_clave()
+            ([n, e], [n, d])
+        """
         self._generar_bases()
         self.e = int(secrets.choice(self._lista_maximo_comun_divisor(self.phi)))
         for i in range(1, self.phi):
@@ -71,6 +131,12 @@ class RSA:
         return [self.n, self.e], [self.n, self.d]
 
     def _create_rule(self) -> str:
+        """
+        Crea una regla de cifrado basada en las reglas existentes y el resultado cifrado actual. Usado para el cifrado RSA.
+
+        Returns:
+            str: El resultado cifrado final.
+        """
         contador = 1
         for i in range(len(self.rules) - 1):
             if self.rules[i] == self.rules[i + 1]:
@@ -120,6 +186,25 @@ class RSA:
             return self.resultado_cifrado_final
 
     def _exponenciacion_rapida(self, base: int, exponente: int, modulo: int) -> int:
+        """
+        Realiza la exponenciación rápida de un número dado aplicandole el modulo especificado.
+
+        Args:
+            base (int): El número base.
+            exponente (int): El exponente al que se desea elevar la base.
+            modulo (int): El módulo utilizado para calcular el resultado.
+
+        Returns:
+            int: El resultado de la exponenciación rápida.
+
+        Examples:
+            >>> _exponenciacion_rapida(2, 3, 5)
+            3
+            >>> _exponenciacion_rapida(2, 3, 7)
+            1
+            >>> _exponenciacion_rapida(2, 3, 9)
+            8
+        """
         resultado = 1
         while exponente > 0:
             if exponente % 2 == 1:
@@ -129,6 +214,20 @@ class RSA:
         return resultado
 
     def cifrar(self, mensaje: str, Llave_publica: list) -> str:
+        """
+        Cifra un mensaje utilizando una llave pública (generada con la misama clase).
+
+        Args:
+            mensaje (str): El mensaje a cifrar.
+            Llave_publica (list): La llave pública utilizada para el cifrado.
+
+        Returns:
+            str: El mensaje cifrado.
+
+        Example:
+            >>> cifrar("Hola", [10778707, 10771595])
+            '111810021898121777995727891755111810706556'
+        """
         self.longitud_mensaje = len(mensaje)
         self.mensaje_cifrado = str(mensaje)
         self.n = Llave_publica[0]
@@ -145,6 +244,25 @@ class RSA:
         return self._create_rule()
 
     def _organizar_mensajeC(self, mensaje_cifrado: str) -> list:
+        """
+        Esta función recibe un mensaje cifrado (cifrado por la funcion cifrar) y lo organiza en una lista siguiendo las instrucciones dadas por los componentes A, B, C y D.
+
+        Componentes:
+            A: Cantidad de digitos que tiene el componente B.
+            B: Cantidad de veces que se repite el componente C.
+            C: Cantidad de digitos que tiene el componente D.
+            D: Cantidad de digitos que tiene el elemento referido a la lista.
+
+        Args:
+            mensaje_cifrado (str): El mensaje cifrado a organizar.
+
+        Returns:
+            list: La lista organizada del mensaje cifrado.
+
+        Examples:
+            >>> _organizar_mensajeC('14174985296336765013929454340577')
+            [4985296, 3367650, 1392945, 4340577]
+        """
         resultado_cifrado = str(mensaje_cifrado)
         cifrado = []
 
@@ -243,6 +361,20 @@ class RSA:
         return cifrado
 
     def descifrar(self, mensaje_cifrado: str, Llave_privada: list) -> str:
+        """
+        Descifra un mensaje cifrado utilizando una llave privada (generada por la misma clase).
+
+        Args:
+            mensaje_cifrado (str): El mensaje cifrado a descifrar.
+            Llave_privada (list): La llave privada utilizada para descifrar el mensaje.
+
+        Returns:
+            str: El mensaje descifrado.
+
+        Examples:
+            >>> descifrar('111714252071116619134111723048281116989148', [3357967, 356143])
+            'Hola'
+        """
         self.lista_cifrado = self._organizar_mensajeC(mensaje_cifrado)
         rango = len(self.lista_cifrado)
         self.n = Llave_privada[0]
