@@ -43,6 +43,28 @@ class RSA:
         self.rules = np.array([], dtype=int)
         self.rules_Final = list()
 
+    def generar_clave(self) -> tuple:
+        """
+        Genera una clave pública y una clave privada para el cifrado y descifrado de datos.
+
+        Returns:
+            tuple: Una tupla que contiene la clave pública y la clave privada.
+
+        Examples: El retorno del ejemplo solo es para mostrar el formato de la tupla.
+            >>> generar_clave()
+            ([n, e], [n, d])
+        """
+        self._generar_bases()
+        self.e = int(secrets.choice(self._lista_maximo_comun_divisor(self.phi)))
+        for i in range(1, self.phi):
+            operacion_d1 = 1 + (i * self.phi)
+            operacion_d2 = operacion_d1 / self.e
+            if operacion_d2.is_integer():
+                self.d = int(operacion_d2)
+                if self.d != self.e:
+                    break
+        return [self.n, self.e], [self.n, self.d]
+
     def _generar_bases(self) -> tuple:
         """
         Genera los valores de las bases necesarios para el cifrado y descifrado.
@@ -65,22 +87,6 @@ class RSA:
             self.n = self.p * self.q
             self.phi = (self.p - 1) * (self.q - 1)
             return self.p, self.q, self.n, self.phi
-
-    def _mcd(self, a: int, b: int) -> int:
-        """
-        Calcula el máximo común divisor (MCD) de dos números enteros utilizando el algoritmo de Euclides.
-
-        Args:
-            a (int): El primer número entero.
-            b (int): El segundo número entero.
-
-        Returns:
-            int: El máximo común divisor de los dos números enteros.
-        """
-        if b == 0:
-            return a
-        else:
-            return self._mcd(b, a % b)
 
     def _lista_maximo_comun_divisor(self, phi: int) -> list:
         """
@@ -108,27 +114,51 @@ class RSA:
                     break
         return lista
 
-    def generar_clave(self) -> tuple:
+    def _mcd(self, a: int, b: int) -> int:
         """
-        Genera una clave pública y una clave privada para el cifrado y descifrado de datos.
+        Calcula el máximo común divisor (MCD) de dos números enteros utilizando el algoritmo de Euclides.
+
+        Args:
+            a (int): El primer número entero.
+            b (int): El segundo número entero.
 
         Returns:
-            tuple: Una tupla que contiene la clave pública y la clave privada.
-
-        Examples: El retorno del ejemplo solo es para mostrar el formato de la tupla.
-            >>> generar_clave()
-            ([n, e], [n, d])
+            int: El máximo común divisor de los dos números enteros.
         """
-        self._generar_bases()
-        self.e = int(secrets.choice(self._lista_maximo_comun_divisor(self.phi)))
-        for i in range(1, self.phi):
-            operacion_d1 = 1 + (i * self.phi)
-            operacion_d2 = operacion_d1 / self.e
-            if operacion_d2.is_integer():
-                self.d = int(operacion_d2)
-                if self.d != self.e:
-                    break
-        return [self.n, self.e], [self.n, self.d]
+        if b == 0:
+            return a
+        else:
+            return self._mcd(b, a % b)
+
+    def cifrar(self, mensaje: str, Llave_publica: list) -> str:
+        """
+        Cifra un mensaje utilizando una llave pública (generada con la misama clase).
+
+        Args:
+            mensaje (str): El mensaje a cifrar.
+            Llave_publica (list): La llave pública utilizada para el cifrado.
+
+        Returns:
+            str: El mensaje cifrado.
+
+        Example:
+            >>> cifrar("Hola", [10778707, 10771595])
+            '111810021898121777995727891755111810706556'
+        """
+        self.longitud_mensaje = len(mensaje)
+        self.mensaje_cifrado = str(mensaje)
+        self.n = Llave_publica[0]
+        self.e = Llave_publica[1]
+
+        operacion = int()
+        rule = int()
+        for letra in self.mensaje_cifrado:
+            dato = int(ord(letra))
+            operacion = self._exponenciacion_rapida(dato, self.e, self.n)
+            self.resultado_cifrado.append(operacion)
+            rule = len(str(operacion))
+            self.rules = np.append(self.rules, rule)
+        return self._create_rule()
 
     def _create_rule(self) -> str:
         """
@@ -185,63 +215,31 @@ class RSA:
 
             return self.resultado_cifrado_final
 
-    def _exponenciacion_rapida(self, base: int, exponente: int, modulo: int) -> int:
+    def descifrar(self, mensaje_cifrado: str, Llave_privada: list) -> str:
         """
-        Realiza la exponenciación rápida de un número dado aplicandole el modulo especificado.
+        Descifra un mensaje cifrado utilizando una llave privada (generada por la misma clase).
 
         Args:
-            base (int): El número base.
-            exponente (int): El exponente al que se desea elevar la base.
-            modulo (int): El módulo utilizado para calcular el resultado.
+            mensaje_cifrado (str): El mensaje cifrado a descifrar.
+            Llave_privada (list): La llave privada utilizada para descifrar el mensaje.
 
         Returns:
-            int: El resultado de la exponenciación rápida.
+            str: El mensaje descifrado.
 
         Examples:
-            >>> _exponenciacion_rapida(2, 3, 5)
-            3
-            >>> _exponenciacion_rapida(2, 3, 7)
-            1
-            >>> _exponenciacion_rapida(2, 3, 9)
-            8
+            >>> descifrar('111714252071116619134111723048281116989148', [3357967, 356143])
+            'Hola'
         """
-        resultado = 1
-        while exponente > 0:
-            if exponente % 2 == 1:
-                resultado = (resultado * base) % modulo
-            exponente = exponente // 2
-            base = (base * base) % modulo
-        return resultado
-
-    def cifrar(self, mensaje: str, Llave_publica: list) -> str:
-        """
-        Cifra un mensaje utilizando una llave pública (generada con la misama clase).
-
-        Args:
-            mensaje (str): El mensaje a cifrar.
-            Llave_publica (list): La llave pública utilizada para el cifrado.
-
-        Returns:
-            str: El mensaje cifrado.
-
-        Example:
-            >>> cifrar("Hola", [10778707, 10771595])
-            '111810021898121777995727891755111810706556'
-        """
-        self.longitud_mensaje = len(mensaje)
-        self.mensaje_cifrado = str(mensaje)
-        self.n = Llave_publica[0]
-        self.e = Llave_publica[1]
-
-        operacion = int()
-        rule = int()
-        for letra in self.mensaje_cifrado:
-            dato = int(ord(letra))
-            operacion = self._exponenciacion_rapida(dato, self.e, self.n)
-            self.resultado_cifrado.append(operacion)
-            rule = len(str(operacion))
-            self.rules = np.append(self.rules, rule)
-        return self._create_rule()
+        self.lista_cifrado = self._organizar_mensajeC(mensaje_cifrado)
+        rango = len(self.lista_cifrado)
+        self.n = Llave_privada[0]
+        self.d = Llave_privada[1]
+        for i in range(rango):
+            letra_cifrado = int(self.lista_cifrado[i])
+            operacion = self._exponenciacion_rapida(letra_cifrado, self.d, self.n)
+            self.resultado_descifrado.append(chr(operacion))
+        mesanje_descifrado = "".join(self.resultado_descifrado)
+        return mesanje_descifrado
 
     def _organizar_mensajeC(self, mensaje_cifrado: str) -> list:
         """
@@ -360,28 +358,30 @@ class RSA:
                 break
         return cifrado
 
-    def descifrar(self, mensaje_cifrado: str, Llave_privada: list) -> str:
+    def _exponenciacion_rapida(self, base: int, exponente: int, modulo: int) -> int:
         """
-        Descifra un mensaje cifrado utilizando una llave privada (generada por la misma clase).
+        Realiza la exponenciación rápida de un número dado aplicandole el modulo especificado.
 
         Args:
-            mensaje_cifrado (str): El mensaje cifrado a descifrar.
-            Llave_privada (list): La llave privada utilizada para descifrar el mensaje.
+            base (int): El número base.
+            exponente (int): El exponente al que se desea elevar la base.
+            modulo (int): El módulo utilizado para calcular el resultado.
 
         Returns:
-            str: El mensaje descifrado.
+            int: El resultado de la exponenciación rápida.
 
         Examples:
-            >>> descifrar('111714252071116619134111723048281116989148', [3357967, 356143])
-            'Hola'
+            >>> _exponenciacion_rapida(2, 3, 5)
+            3
+            >>> _exponenciacion_rapida(2, 3, 7)
+            1
+            >>> _exponenciacion_rapida(2, 3, 9)
+            8
         """
-        self.lista_cifrado = self._organizar_mensajeC(mensaje_cifrado)
-        rango = len(self.lista_cifrado)
-        self.n = Llave_privada[0]
-        self.d = Llave_privada[1]
-        for i in range(rango):
-            letra_cifrado = int(self.lista_cifrado[i])
-            operacion = self._exponenciacion_rapida(letra_cifrado, self.d, self.n)
-            self.resultado_descifrado.append(chr(operacion))
-        mesanje_descifrado = "".join(self.resultado_descifrado)
-        return mesanje_descifrado
+        resultado = 1
+        while exponente > 0:
+            if exponente % 2 == 1:
+                resultado = (resultado * base) % modulo
+            exponente = exponente // 2
+            base = (base * base) % modulo
+        return resultado
