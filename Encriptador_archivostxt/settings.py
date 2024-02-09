@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+
 import os
 from dotenv import load_dotenv
 from pathlib import Path
@@ -143,4 +144,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = "Users_EncrytedPage.Users_EncrytedPage"
 
 # Llave de encriptacion
-KEY = os.getenv("KEYENCRYPT")
+
+KEY = b"-vn-5Gh28Z3gcyfArydyKE-5uzXN8giqbesjhtVsJsQ="

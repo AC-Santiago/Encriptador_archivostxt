@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .Import_export import import_export
+from .Import_export import import_passwords as import_export
 from .cryptography_module import decrypt_password, encrypt_password
 from .forms import PasswordsUsersForm, MasterKeyForm
 from .models import Passwords_users
@@ -38,6 +38,8 @@ def passwords_page(request):
                 return redirect_to_password_detail(request)
             elif "form_create_password" in request.POST:
                 return redirect_to_create_password(request)
+            elif "form_import_passwords" in request.POST:
+                return import_passwords(request)
         except ValueError:
             return redirect("Passwords_Page")
 
@@ -213,30 +215,26 @@ def password_detail(request, password_id):
 
 # -------------------------PASSWORD DETAIL-------------------------#
 
+
 # -------------------------IMPORT EXPORT-------------------------#
-# """Importa las contraseñas"""
 def import_passwords(request):
-    datos = import_export("ArchivosTemporales/Contraseñas de Microsoft Edge personal.csv").import_passwords()
-    for i in datos:
-        if i == 0:
-            # extraemos los datos del formulario
-            name = datos[i][0]
-            username = datos[i][2]
-            email = datos[i][2]
-            origin = datos[i][1]
-            password = datos[i][3]
-
-            # encriptamos la contraseña y el email
-            encrypted_password = encrypt_password(password, llave)
-            encrypted_email = encrypt_password(email, llave)
-
-            # creamos el objeto
-            new_password = Passwords_users(
-                password_name=name,
-                password_username=username,
+    file = request.FILES["file_passwords_import"]
+    try:
+        df = import_export(file, request.user.username, request.user.email)
+        for index, row in df.iterrows():
+            encrypted_password = encrypt_password(row["password"], llave)
+            encrypted_email = encrypt_password(row["email"], llave)
+            password = Passwords_users(
+                password_name=row["name"],
+                password_username=row["username"],
                 password_email=encrypted_email,
-                password_origin=origin,
+                password_origin=row["url"],
                 password=encrypted_password,
                 user=request.user,
             )
-            new_password.save()
+            password.save()
+    except ValueError:
+        print(f"Error: {ValueError}")
+        return redirect("Passwords_Page")
+    finally:
+        return redirect("Passwords_Page")
