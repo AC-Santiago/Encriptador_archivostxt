@@ -29,17 +29,24 @@ def passwords_page(request):
         form = MasterKeyForm(request.POST)
         try:
             if not form.is_valid():
+                print("Invalid form")
                 return redirect("Passwords_Page")
+            elif "form_import_passwords" in request.POST:
+                print("Import passwords")
+                return import_passwords(request)
             if not master_key:
+                print("No master key")
                 return create_pin(request)
             if not pin_validator(request):
+                print("Invalid pin")
                 return redirect("Passwords_Page")
             if "form_password_detail" in request.POST:
+                print("Password detail")
                 return redirect_to_password_detail(request)
             elif "form_create_password" in request.POST:
+                print("Create password")
                 return redirect_to_create_password(request)
-            elif "form_import_passwords" in request.POST:
-                return import_passwords(request)
+
         except ValueError:
             return redirect("Passwords_Page")
 
@@ -221,6 +228,7 @@ def import_passwords(request):
     file = request.FILES["file_passwords_import"]
     try:
         df = import_export(file, request.user.username, request.user.email)
+        print(df)
         for index, row in df.iterrows():
             encrypted_password = encrypt_password(row["password"], llave)
             encrypted_email = encrypt_password(row["email"], llave)
@@ -233,8 +241,8 @@ def import_passwords(request):
                 user=request.user,
             )
             password.save()
-    except ValueError:
-        print(f"Error: {ValueError}")
+    except ValueError as e:
+        print(f"Error: {e.args[0]}")
         return redirect("Passwords_Page")
     finally:
         return redirect("Passwords_Page")
